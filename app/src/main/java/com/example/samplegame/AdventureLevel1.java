@@ -11,12 +11,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class AdventureLevel1 extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.adventure_level1);
 
         final Handler handler = new Handler();
 
@@ -81,10 +81,6 @@ public class MainActivity extends AppCompatActivity {
                     failed = 1;
                 }
 
-//                if(done_moving == 1){
-//                    knight.setImageDrawable(idle_knight);
-//                }
-
                 //go back to start after failed level
                 if(failed == 1){
 
@@ -103,8 +99,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }, 6000);
                 }
-
-
             }
         });
 
