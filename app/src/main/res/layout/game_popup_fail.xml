@@ -35,7 +35,7 @@
             android:background="@drawable/rounded_corner"
             android:fontFamily="@font/abril_fatface"
             android:gravity="center"
-            android:text="You have passed the level warrior! I commend you"
+            android:text="You disappoint me warrior, pick yourself up and try again"
             android:textColor="#2D4059" />
 
         <ImageView
@@ -44,7 +44,7 @@
             android:layout_height="52dp"
             android:layout_gravity="bottom|start"
             android:layout_weight="1"
-            app:srcCompat="@drawable/idle_wizard" />
+            app:srcCompat="@drawable/sad_wizard" />
 
     </LinearLayout>
 
@@ -79,7 +79,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@drawable/button_background_color"
-            android:text="Next" />
+            android:text="Retry" />
 
     </LinearLayout>
 
