@@ -76,20 +76,51 @@ public class training extends AppCompatActivity {
         });
 
 
+        final Handler handler = new Handler();
+        final View goal_node = findViewById(R.id.flower_node_goal);
+        final View start_knight = findViewById(R.id.knight1);
+        final TextView path_A_txtView = findViewById(R.id.path_A_txtView);
+        final View flower_node_2 = findViewById(R.id.flower_node_2);
+        final TextView path_B_txtView = findViewById(R.id.path_B_txtView);
+
+        goal_node.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                translate(start_knight, goal_node);
+            }
+        });
+
+        path_A_txtView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                translate(start_knight, goal_node);
+            }
+        });
+
+        flower_node_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                translate(start_knight, flower_node_2);
+            }
+        });
 
 
-
-
+        path_B_txtView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                translate(start_knight, flower_node_2);
+            }
+        });
 
 //
-//        final Handler handler = new Handler();
+
 //
 //        EditText input = findViewById(R.id.inputEditText);
 //        ImageView knight = findViewById(R.id.knight);
-//        final View start_knight = findViewById(R.id.start_image);
+
 //        final View node1 = findViewById(R.id.flower_node_1);
 //        final View node2 = findViewById(R.id.dummy1_target2);
-//        final View goal_node = findViewById(R.id.skeleton1_target1);
+
 //        Button move = findViewById(R.id.B_btn);
 //
 //        Drawable climbing_knight = getResources().getDrawable(R.drawable.climb_knight);
