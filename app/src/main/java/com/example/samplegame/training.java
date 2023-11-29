@@ -1,22 +1,86 @@
 package com.example.samplegame;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class training extends AppCompatActivity {
+
+    private FirebaseFirestore db;
+
+    private DocumentReference dialogueRef;
+
+    private List<String> dataset = new ArrayList<>();
+
+    TextView wizard_dialogue;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.alphabet_training);
+        Log.d("training", "Failed");
+
+        wizard_dialogue = findViewById(R.id.txtWizarddialogue);
+
+        // Initialize Firebase
+        FirebaseApp.initializeApp(this);
+        db = FirebaseFirestore.getInstance();
+        dialogueRef = db.document("Dialogue/mNTpH0tXVP48DLm5P9ef");
+
+        dialogueRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists()) {
+                        // Document exists, you can access its data
+                        String a = doc.getString("answer_key");
+                        String b = doc.getString("dialogue");
+
+                        Log.d("training", "Answer Key: " + a);
+                        Log.d("training", "Dialogue: " + b);
+
+                        wizard_dialogue.setText(b);
+                    } else {
+                        Log.d("training", "Document not found");
+                    }
+                } else {
+                    Log.d("training", "Failed: " + task.getException());
+                }
+            }
+        });
+
+
+
+
+
+
+
 //
 //        final Handler handler = new Handler();
 //
