@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "86584157678",
+    "project_id": "studyguru-1e662",
+    "storage_bucket": "studyguru-1e662.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86584157678:android:3b946134b09fe9fb3f5aff",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9CLdsvkmUVa4cJmcjgp-yNd8BsZ7Obgw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86584157678:android:af51062ca5ff20a43f5aff",
+        "android_client_info": {
+          "package_name": "com.example.samplegame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9CLdsvkmUVa4cJmcjgp-yNd8BsZ7Obgw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86584157678:android:d9406f7fcc8e37603f5aff",
+        "android_client_info": {
+          "package_name": "com.example.studyguru"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9CLdsvkmUVa4cJmcjgp-yNd8BsZ7Obgw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
