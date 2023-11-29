@@ -294,7 +294,7 @@
         app:layout_constraintStart_toEndOf="@+id/linearLayout2" />
 
     <Button
-        android:id="@+id/B_btn"
+        android:id="@+id/movebtn"
         android:layout_width="102dp"
         android:layout_height="39dp"
         android:layout_marginTop="20dp"
