@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">SampleGame</string>
     <string name="title_activity_level_menu">Level_Menu</string>
+    <string name="title_activity_training2">training2</string>
 </resources>
