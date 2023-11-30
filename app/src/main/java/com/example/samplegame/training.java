@@ -3,6 +3,7 @@ package com.example.samplegame;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,7 +36,7 @@ import java.util.regex.Pattern;
 public class training extends AppCompatActivity {
 
     private FirebaseFirestore firestore;
-
+    private boolean enableClick = false;
     private List<String> dataset = new ArrayList<>();
     private String answer = "";
     TextView wizard_dialogue;
@@ -55,6 +56,17 @@ public class training extends AppCompatActivity {
         // Initialize Firebase
         this.firestore =FirebaseFirestore.getInstance();
 
+        final Handler handler = new Handler();
+        final View goal_node = findViewById(R.id.flower_node_goal);
+        final View start_knight = findViewById(R.id.knight1);
+        final TextView path_A_txtView = findViewById(R.id.path_A_txtView);
+        final View flower_node_2 = findViewById(R.id.flower_node_2);
+        final TextView path_B_txtView = findViewById(R.id.path_B_txtView);
+        flower_node_2.setBackgroundResource(R.drawable.dummy_attacked);
+        goal_node.setBackgroundResource(R.drawable.skeleton_attack);
+
+        AnimationDrawable attackAnimation= (AnimationDrawable) goal_node.getBackground();
+        AnimationDrawable attackedAnimation = (AnimationDrawable) flower_node_2.getBackground();
 
         firestore.collection("Dialogue")
                 .limit(1)
@@ -87,6 +99,11 @@ public class training extends AppCompatActivity {
                     // Use the lastDocumentKey to query the next document
                 Log.d("training", "Answer: " + answer);
                 if(a == null || a.isEmpty() || answer.matches(a)) {
+                    answer = "";
+                    path_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
+                    path_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
+                    attackedAnimation.stop();
+                    attackAnimation.stop();
                     firestore.collection("Dialogue")
                             .orderBy(FieldPath.documentId())
                             .startAfter(lastDocumentKey)
@@ -107,6 +124,11 @@ public class training extends AppCompatActivity {
 
                                             // Update the lastDocumentKey for the next iteration
                                             lastDocumentKey = document.getId();
+                                            if(!a.isEmpty()){
+                                                enableClick = true;
+                                            }else{
+                                                enableClick = false;
+                                            }
                                         }
                                     } else {
                                         Log.d("training", "Failed: " + task.getException());
@@ -116,21 +138,22 @@ public class training extends AppCompatActivity {
                 }else{
                     Log.d("training","Wrong Answer");
                     answer = "";
+                    path_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
+                    path_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
+                    attackedAnimation.stop();
+                    attackAnimation.stop();
                 }
             }
         });
 
-        final Handler handler = new Handler();
-        final View goal_node = findViewById(R.id.flower_node_goal);
-        final View start_knight = findViewById(R.id.knight1);
-        final TextView path_A_txtView = findViewById(R.id.path_A_txtView);
-        final View flower_node_2 = findViewById(R.id.flower_node_2);
-        final TextView path_B_txtView = findViewById(R.id.path_B_txtView);
-
         goal_node.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                translate(start_knight, goal_node);
+                if(enableClick) {
+//                    translate(start_knight, goal_node);
+                    answer = answer + "monster";
+                    attackAnimation.start();
+                }
             }
         });
 
@@ -138,15 +161,21 @@ public class training extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 //                translate(start_knight, goal_node);
-                answer = answer+"A";
-                path_A_txtView.setBackgroundResource(R.drawable.clicked_rounded_corner);
+                if(enableClick) {
+                    answer = answer + "A";
+                    path_A_txtView.setBackgroundResource(R.drawable.clicked_rounded_corner);
+                }
             }
         });
 
         flower_node_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                translate(start_knight, flower_node_2);
+//                translate(start_knight, flower_node_2);
+                if(enableClick){
+                    answer = answer + "dummy";
+                    attackedAnimation.start();
+                }
             }
         });
 
@@ -155,8 +184,10 @@ public class training extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 //                translate(start_knight, flower_node_2);
-                answer = answer+"B";
-                path_B_txtView.setBackgroundResource(R.drawable.clicked_rounded_corner);
+                if(enableClick) {
+                    answer = answer + "B";
+                    path_B_txtView.setBackgroundResource(R.drawable.clicked_rounded_corner);
+                }
             }
         });
 
