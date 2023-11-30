@@ -1,12 +1,9 @@
 package com.example.samplegame;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-
-import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class Level_Menu extends AppCompatActivity {
 
@@ -18,7 +15,6 @@ public class Level_Menu extends AppCompatActivity {
         final View training_btn = findViewById(R.id.basicsbtn);
         final View adventure_btn = findViewById(R.id.adventurebtn);
 
-        //FirebaseApp.InitializeApp(this);
 
         training_btn.setOnClickListener(new View.OnClickListener() {
             @Override
