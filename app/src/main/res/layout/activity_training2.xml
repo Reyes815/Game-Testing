@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#7DB8C3"
+    tools:context=".AdventureLevel1">
+
+    <TextView
+        android:id="@+id/training2_txtView"
+        android:layout_width="157dp"
+        android:layout_height="37dp"
+        android:fontFamily="casual"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="Knight Training"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
+        app:layout_constraintHorizontal_bias="0.511"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+        tools:layout_editor_absoluteY="38dp" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="414dp"
+        android:layout_height="38dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="29dp"
+        android:layout_height="691dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"></LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="25dp"
+        android:layout_height="687dp"
+        android:layout_marginTop="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"></LinearLayout>
+
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageView4"
+        android:layout_width="325dp"
+        android:layout_height="360dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
+        app:layout_constraintHorizontal_bias="0.437"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.256"
+        app:srcCompat="@drawable/grass"
+        app:strokeColor="#3F51B5"
+        app:strokeWidth="15dp" />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="162dp"
+        android:layout_height="189dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="30dp"
+        android:rotation="40"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+        app:layout_constraintEnd_toEndOf="@+id/imageView4"
+        app:srcCompat="@drawable/path" />
+
+    <ImageView
+        android:id="@+id/flower_node_2"
+        android:layout_width="66dp"
+        android:layout_height="101dp"
+        android:layout_marginTop="96dp"
+        android:layout_marginEnd="20dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="@+id/imageView4"
+        app:layout_constraintTop_toTopOf="@+id/imageView4"
+        app:srcCompat="@drawable/dummy_1" />
+
+    <ImageView
+        android:id="@+id/flower_node_goal"
+        android:layout_width="76dp"
+        android:layout_height="94dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="84dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toStartOf="@+id/imageView4"
+        app:layout_constraintTop_toTopOf="@+id/imageView4"
+        app:srcCompat="@drawable/skeleton" />
+
+    <TextView
+        android:id="@+id/path_B_txtView"
+        android:layout_width="50dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="244dp"
+        android:layout_marginEnd="28dp"
+        android:background="@drawable/rounded_corner"
+        android:fontFamily="@font/abril_fatface"
+        android:gravity="center"
+        android:text="B"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="@+id/imageView4"
+        app:layout_constraintTop_toTopOf="@+id/imageView4" />
+
+    <TextView
+        android:id="@+id/txtWizarddialogue"
+        android:layout_width="295dp"
+        android:layout_height="184dp"
+        android:background="@drawable/wizard_dialogue_textview"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
+        app:layout_constraintHorizontal_bias="0.467"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/imageView4"
+        app:layout_constraintVertical_bias="0.505" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/next"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"
+        app:backgroundTint="@color/yellow"
+        app:elevation="8dp" />
+
+    <ImageView
+        android:id="@+id/pathA"
+        android:layout_width="193dp"
+        android:layout_height="179dp"
+        android:layout_marginBottom="30dp"
+        android:rotation="-40"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+        app:layout_constraintStart_toStartOf="@+id/imageView4"
+        app:srcCompat="@drawable/path" />
+
+    <ImageView
+        android:id="@+id/knight1"
+        android:layout_width="87dp"
+        android:layout_height="97dp"
+        android:layout_marginBottom="4dp"
+        android:foregroundGravity="center|fill"
+        android:scaleType="fitCenter"
+        android:src="@drawable/idle_knight"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout2" />
+
+    <TextView
+        android:id="@+id/path_A_txtView"
+        android:layout_width="50dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="244dp"
+        android:background="@drawable/rounded_corner"
+        android:fontFamily="@font/abril_fatface"
+        android:gravity="center"
+        android:text="A"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="@+id/imageView4"
+        app:layout_constraintTop_toTopOf="@+id/imageView4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
