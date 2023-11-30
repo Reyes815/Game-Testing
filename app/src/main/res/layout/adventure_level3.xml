@@ -48,14 +48,93 @@
         app:strokeWidth="15dp" />
 
     <ImageView
-        android:id="@+id/start_vine2"
-        android:layout_width="205dp"
-        android:layout_height="193dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="52dp"
-        android:rotation="39"
+        android:id="@+id/start_vine6"
+        android:layout_width="111dp"
+        android:layout_height="163dp"
+        android:layout_marginTop="204dp"
         android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="@+id/imageView4"
+        app:layout_constraintHorizontal_bias="0.919"
+        app:layout_constraintStart_toStartOf="@+id/imageView4"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:srcCompat="@drawable/vine" />
+
+    <TextView
+        android:id="@+id/path_B_txtView3"
+        android:layout_width="62dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="264dp"
+        android:layout_marginEnd="40dp"
+        android:background="@drawable/rounded_corner"
+        android:fontFamily="@font/abril_fatface"
+        android:gravity="center"
+        android:text="B↓"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <ImageView
+        android:id="@+id/start_vine4"
+        android:layout_width="140dp"
+        android:layout_height="160dp"
+        android:layout_marginStart="112dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="33dp"
+        android:rotation="-20"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="@+id/imageView4"
+        app:layout_constraintStart_toStartOf="@+id/imageView4"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:srcCompat="@drawable/vine" />
+
+    <TextView
+        android:id="@+id/path_A_txtView3"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="176dp"
+        android:layout_marginTop="104dp"
+        android:background="@drawable/rounded_corner"
+        android:fontFamily="@font/abril_fatface"
+        android:gravity="center"
+        android:text="A ↑"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
+        android:textSize="30sp"
         app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <ImageView
+        android:id="@+id/start_vine3"
+        android:layout_width="140dp"
+        android:layout_height="160dp"
+        android:layout_marginTop="236dp"
+        android:rotation="-34"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="@+id/imageView4"
+        app:layout_constraintStart_toStartOf="@+id/imageView4"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:srcCompat="@drawable/vine" />
+
+    <ImageView
+        android:id="@+id/flower_node_3"
+        android:layout_width="111dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="164dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:srcCompat="@drawable/flower" />
+
+    <ImageView
+        android:id="@+id/start_vine2"
+        android:layout_width="140dp"
+        android:layout_height="160dp"
+        android:layout_marginTop="148dp"
+        android:rotation="68"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="@+id/imageView4"
         app:layout_constraintStart_toStartOf="@+id/imageView4"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         app:srcCompat="@drawable/vine" />
@@ -75,27 +154,12 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         app:srcCompat="@drawable/vine" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="246dp"
-        android:layout_height="111dp"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="244dp"
-        android:layout_marginEnd="92dp"
-        android:rotation="-54"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:srcCompat="@drawable/vine" />
-
     <TextView
         android:id="@+id/path_B_txtView"
         android:layout_width="62dp"
         android:layout_height="49dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="204dp"
         android:background="@drawable/rounded_corner"
         android:fontFamily="@font/abril_fatface"
         android:gravity="center"
@@ -112,10 +176,10 @@
         android:layout_width="111dp"
         android:layout_height="55dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="216dp"
+        android:layout_marginTop="236dp"
         android:layout_marginEnd="196dp"
         app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
-        app:layout_constraintHorizontal_bias="0.375"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/linearLayout2"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         app:srcCompat="@drawable/flower" />
@@ -135,14 +199,14 @@
 
     <TextView
         android:id="@+id/path_A_txtView"
-        android:layout_width="123dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="292dp"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="308dp"
         android:background="@drawable/rounded_corner"
         android:fontFamily="@font/abril_fatface"
         android:gravity="center"
-        android:text="A ↑/A ↓"
+        android:text="A ↑"
         android:textColor="#000000"
         android:textColorHint="#000000"
         android:textSize="30sp"
@@ -163,8 +227,8 @@
 
     <ImageView
         android:id="@+id/knight"
-        android:layout_width="152dp"
-        android:layout_height="133dp"
+        android:layout_width="139dp"
+        android:layout_height="117dp"
         android:layout_marginBottom="28dp"
         android:foregroundGravity="center|fill"
         android:scaleType="fitCenter"
@@ -183,7 +247,7 @@
         android:ems="10"
         android:fontFamily="casual"
         android:inputType="text"
-        android:maxLength="2"
+        android:maxLength="3"
         android:shadowColor="#000000"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -194,6 +258,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
+        android:onClick="Move"
         android:id="@+id/movebtn"
         android:layout_width="78dp"
         android:layout_height="43dp"
@@ -211,10 +276,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="11dp"
         android:fontFamily="casual"
-        android:text="Max Character Input: 2"
+        android:text="Max Character Input: 3"
+        android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
         app:layout_constraintHorizontal_bias="0.513"
         app:layout_constraintStart_toEndOf="@+id/linearLayout2"

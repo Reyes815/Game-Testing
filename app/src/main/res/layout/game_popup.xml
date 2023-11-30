@@ -23,7 +23,8 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@drawable/button_background_color"
-            android:text="X" />
+            android:text="X"
+            android:textColor="#000000" />
 
         <TextView
             android:id="@+id/textView3"
