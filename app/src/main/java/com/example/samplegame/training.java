@@ -42,7 +42,7 @@ public class training extends AppCompatActivity {
     TextView wizard_dialogue;
     FloatingActionButton next_button;
     private String lastDocumentKey = null;
-    private String a;
+    private String a = "",a2;
     private String b;
 
     @Override
@@ -57,16 +57,29 @@ public class training extends AppCompatActivity {
         this.firestore =FirebaseFirestore.getInstance();
 
         final Handler handler = new Handler();
+
+        final View goal_node2 = findViewById(R.id.flower_node_goal2); //
         final View goal_node = findViewById(R.id.flower_node_goal);
         final View start_knight = findViewById(R.id.knight1);
+        final TextView path2_A_txtView = findViewById(R.id.path2_A_txtView);//
         final TextView path_A_txtView = findViewById(R.id.path_A_txtView);
+
         final View flower_node_2 = findViewById(R.id.flower_node_2);
         final TextView path_B_txtView = findViewById(R.id.path_B_txtView);
+        final View flower_node_ = findViewById(R.id.flower_node_);//
+        final TextView path2_B_txtView = findViewById(R.id.path2_B_txtView);//
+
+        flower_node_.setBackgroundResource(R.drawable.dummy_attacked);
+        goal_node2.setBackgroundResource(R.drawable.skeleton_attack);
+
         flower_node_2.setBackgroundResource(R.drawable.dummy_attacked);
         goal_node.setBackgroundResource(R.drawable.skeleton_attack);
 
         AnimationDrawable attackAnimation= (AnimationDrawable) goal_node.getBackground();
         AnimationDrawable attackedAnimation = (AnimationDrawable) flower_node_2.getBackground();
+
+        AnimationDrawable attackAnimation2= (AnimationDrawable) goal_node2.getBackground();
+        AnimationDrawable attackedAnimation2 = (AnimationDrawable) flower_node_.getBackground();
 
         firestore.collection("Dialogue")
                 .limit(1)
@@ -98,12 +111,19 @@ public class training extends AppCompatActivity {
                 // Check if the lastDocumentKey is available
                     // Use the lastDocumentKey to query the next document
                 Log.d("training", "Answer: " + answer);
-                if(a == null || a.isEmpty() || answer.matches(a)) {
+                if(a == null || a.isEmpty() || answer.matches(a) || answer.matches(a2)) {
+                    if(answer.isEmpty() && a != ""){
+                        return;
+                    }
                     answer = "";
                     path_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
                     path_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
+                    path2_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
+                    path2_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
                     attackedAnimation.stop();
                     attackAnimation.stop();
+                    attackedAnimation2.stop();
+                    attackAnimation2.stop();
                     firestore.collection("Dialogue")
                             .orderBy(FieldPath.documentId())
                             .startAfter(lastDocumentKey)
@@ -114,6 +134,7 @@ public class training extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                     if (task.isSuccessful()) {
                                         for (QueryDocumentSnapshot document : task.getResult()) {
+                                            a2 = document.getString("answer_key2");
                                             a = document.getString("answer_key");
                                             b = document.getString("dialogue");
 
@@ -140,8 +161,12 @@ public class training extends AppCompatActivity {
                     answer = "";
                     path_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
                     path_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
+                    path2_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
+                    path2_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
                     attackedAnimation.stop();
                     attackAnimation.stop();
+                    attackedAnimation2.stop();
+                    attackAnimation2.stop();
                 }
             }
         });
@@ -151,8 +176,19 @@ public class training extends AppCompatActivity {
             public void onClick(View view) {
                 if(enableClick) {
 //                    translate(start_knight, goal_node);
-                    answer = answer + "monster";
+                    answer = answer + "M";
                     attackAnimation.start();
+                }
+            }
+        });
+
+        goal_node2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(enableClick) {
+//                    translate(start_knight, goal_node);
+                    answer = answer + "M";
+                    attackAnimation2.start();
                 }
             }
         });
@@ -167,18 +203,37 @@ public class training extends AppCompatActivity {
                 }
             }
         });
-
+        path2_A_txtView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                translate(start_knight, goal_node);
+                if(enableClick) {
+                    answer = answer + "A";
+                    path2_A_txtView.setBackgroundResource(R.drawable.clicked_rounded_corner);
+                }
+            }
+        });
         flower_node_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                translate(start_knight, flower_node_2);
                 if(enableClick){
-                    answer = answer + "dummy";
+                    answer = answer + "D";
                     attackedAnimation.start();
                 }
             }
         });
 
+        flower_node_.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                translate(start_knight, flower_node_2);
+                if(enableClick){
+                    answer = answer + "D";
+                    attackedAnimation2.start();
+                }
+            }
+        });
 
         path_B_txtView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,6 +246,16 @@ public class training extends AppCompatActivity {
             }
         });
 
+        path2_B_txtView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                translate(start_knight, flower_node_2);
+                if(enableClick) {
+                    answer = answer + "B";
+                    path2_B_txtView.setBackgroundResource(R.drawable.clicked_rounded_corner);
+                }
+            }
+        });
     }
 
     private void translate(View viewToMove, View target) {
