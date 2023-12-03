@@ -27,7 +27,7 @@ public class Level_Menu extends AppCompatActivity {
         adventure_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent adventure = new Intent(getApplicationContext(), AdventureLevel3.class);
+                Intent adventure = new Intent(getApplicationContext(), AdventureLevel4.class);
                 startActivity(adventure);
             }
         });

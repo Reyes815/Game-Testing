@@ -210,7 +210,7 @@ public class AdventureLevel3 extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent next_popup = new Intent(getApplicationContext(), AdventureLevel2.class);
+                Intent next_popup = new Intent(getApplicationContext(), AdventureLevel4.class);
                 startActivity(next_popup);
             }
         });

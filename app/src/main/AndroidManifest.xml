@@ -13,6 +13,9 @@
         android:theme="@style/Theme.SampleGame"
         tools:targetApi="31">
         <activity
+            android:name=".AdventureLevel4"
+            android:exported="false" />
+        <activity
             android:name=".AdventureLevel3"
             android:exported="false" />
         <activity
@@ -30,11 +33,11 @@
             android:label="@string/title_activity_training2"
             android:theme="@style/Theme.SampleGame">
 
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+<!--        <intent-filter>-->
+<!--            <action android:name="android.intent.action.MAIN" />-->
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+<!--            <category android:name="android.intent.category.LAUNCHER" />-->
+<!--        </intent-filter>-->
 
             </activity>
         <activity
@@ -44,12 +47,12 @@
             android:name=".Level_Menu"
             android:exported="true">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
 
 
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
         <activity
             android:name=".AdventureLevel1"
@@ -57,11 +60,6 @@
         <activity
             android:name=".training"
             android:exported="true">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
         </activity>
 
         <meta-data
