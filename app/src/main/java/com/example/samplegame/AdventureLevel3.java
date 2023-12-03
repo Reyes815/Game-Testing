@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -36,10 +37,12 @@ public class AdventureLevel3 extends AppCompatActivity {
         Drawable idle_knight = getResources().getDrawable(R.drawable.idle_knight);
         Drawable falling_knight = getResources().getDrawable(R.drawable.falling_knight);
         final Handler handler = new Handler();
+        int delay = 1000;
+        input.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
         String strInput = input.getText().toString().trim();
         // Convert input to lowercase for case-insensitive comparison
         String strInputLower = strInput.toLowerCase();
-        int failed = 0;
 
         //check if empty
         if (strInput.isEmpty()) {
@@ -50,83 +53,78 @@ public class AdventureLevel3 extends AppCompatActivity {
         knight.setImageDrawable(climbing_knight);
         translate(knight, node1);
 
-        //check input
-        if(strInputLower.charAt(0) == 'a') {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    translate(knight, node2);
-                }
-            }, 1000);
-            if(strInputLower.charAt(1) == 'b'){
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        translate(knight, node3);
-                    }
-                }, 2000);
-                if(strInputLower.charAt(2) == 'a'){
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            translate(knight, goal_node);
-                        }
-                    }, 3000);
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            knight.setImageDrawable(idle_knight);
-                        }
-                    }, 4000);
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            showGamePopupSuccess();;
-                        }
-                    }, 5000);
-                }else if(strInputLower.charAt(2) == 'b'){
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            translate(knight, node1);
-                        }
-                    }, 3000);
-                    failed = 1;
-                }else{
-                    failed = 1;
-                }
-            }else {
-                failed = 1;
+        // DFA transition table
+        int[][] transition = {
+                {1, 0}, // From state 0 on input 'a', go to state 1; on input 'b', stay on state 0
+                {1, 2}, // From state 1 on input 'a', stay on state 1; on input 'b', go to state 2
+                {3, 0}, // From state 2 on input 'a', go to state 3; on input 'b', go to state 0
+                {3, 3}  // From state 3 on input 'a', stay on state 3; on input 'b', stay on state 3
+        };
+
+        int currentState = 0; // Initial state is 0
+
+        // Process each character in the input string
+        for (int i = 0; i < strInputLower.length(); i++) {
+            char inputSymbol = strInputLower.charAt(i);
+
+            // Convert the character to an integer (assuming 'a' corresponds to 0 and 'b' corresponds to 1)
+            int inp;
+            if (inputSymbol == 'a') {
+                inp = 0;
+            } else if (inputSymbol == 'b') {
+                inp = 1;
+            } else {
+                return;
             }
-        }else {
-            //wrong input
-            failed = 1;
+            //start node
+            switch (currentState) {
+                case 0:
+                    if (inp == 0) {
+                        handler.postDelayed(() -> translate(knight, node2), delay);
+                    }
+                    break;
+
+                case 1:
+                    if (inp == 1) {
+                        handler.postDelayed(() -> translate(knight, node3), delay += 1000);
+                    }
+                    break;
+
+                case 2:
+                    if (inp == 0) {
+                        handler.postDelayed(() -> translate(knight, goal_node), delay += 1000);
+                    } else if (inp == 1) {
+                        handler.postDelayed(() -> translate(knight, node1), delay += 1000);
+                    }
+                    break;
+            }
+
+            // Update the current state using the transition table
+            currentState = transition[currentState][inp];
         }
 
-        //go back to start after failed level
-        if(failed == 1){
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showGamePopupFail();
-                }
-            }, 3000);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    knight.setImageDrawable(falling_knight);
-                    translate(knight, start_knight);
-                }
-            }, 5000);
-
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    knight.setImageDrawable(idle_knight);
-                }
-            }, 6000);
+        handler.postDelayed(() -> knight.setImageDrawable(idle_knight), delay += 1000);
+        // Check if the final state is an accepting state
+        if (currentState == 3) {
+            handler.postDelayed(() -> showGamePopupSuccess(), delay += 1000);
+        } else {
+            handler.postDelayed(() -> showGamePopupFail(), delay += 1000);
         }
+        //reset
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                knight.setImageDrawable(falling_knight);
+                translate(knight, start_knight);
+            }
+        }, 5000);
 
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                knight.setImageDrawable(idle_knight);
+            }
+        }, 6000);
     }
 
     private void translate(View viewToMove, View target) {

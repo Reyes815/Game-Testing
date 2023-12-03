@@ -16,11 +16,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class AdventureLevel4 extends AppCompatActivity {
+public class AdventureLevel5 extends AppCompatActivity {
     Dialog myDialog;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.adventure_level4);
+        setContentView(R.layout.adventure_level5);
         myDialog = new Dialog(this);
     }
 
@@ -53,12 +53,12 @@ public class AdventureLevel4 extends AppCompatActivity {
         knight.setImageDrawable(climbing_knight);
         translate(knight, node1);
 
-        // DFA transition table
+// DFA transition table
         int[][] transition = {
-                {1, 2}, // From state 0 on input 'a', go to state 1; on input 'b', go to state 2
-                {1, 3}, // From state 1 on input 'a', stay on state 1; on input 'b', go to state 3
-                {1, 2}, // From state 2 on input 'a', go to state 1; on input 'b', stay on state 2
-                {1, 4}, // From state 3 on input 'a', go to state 1; on input 'b', go to state 4
+                {0, 1}, // From state 0 on input 'a', stay on state 0; on input 'b', go to state 1
+                {0, 2}, // From state 1 on input 'a', stay on state 1; on input 'b', go to state 3
+                {3, 2}, // From state 2 on input 'a', go to state 3; on input 'b', stay on state 2
+                {4, 1}, // From state 3 on input 'a', go to state 4; on input 'b', go to state 1
                 {4, 4}  // From state 4 on input 'a', stay on state 4; on input 'b', stay on state 4
         };
 
@@ -80,58 +80,56 @@ public class AdventureLevel4 extends AppCompatActivity {
 
             // Transition logic
             // Start state
-            if (currentState == 0 && inp == 0) {
+            if (currentState == 0 && inp == 1) {
                 handler.postDelayed(() -> translate(knight, node2), delay);
             }
-            if (currentState == 0 && inp == 1) {
-                handler.postDelayed(() -> translate(knight, node3), delay);
-            }
             //node 1
+            if (currentState == 1 && inp == 0) {
+                handler.postDelayed(() -> translate(knight, node1), delay += 1000);
+            }
             if (currentState == 1 && inp == 1) {
-                handler.postDelayed(() -> translate(knight, node4), delay += 1000);
+                handler.postDelayed(() -> translate(knight, node3), delay += 1000);
             }
             //node 2
             if (currentState == 2 && inp == 0) {
-                handler.postDelayed(() -> translate(knight, node2), delay += 1000);
+                handler.postDelayed(() -> translate(knight, node4), delay += 1000);
             }
             //node 3
             if (currentState == 3 && inp == 0) {
-                handler.postDelayed(() -> translate(knight, node2), delay += 1000);
-            }
-
-            if (currentState == 3 && inp == 1) {
                 handler.postDelayed(() -> translate(knight, goal_node), delay += 1000);
+            }
+            if (currentState == 3 && inp == 1) {
+                handler.postDelayed(() -> translate(knight, node2), delay += 1000);
             }
 
             // Update the current state using the transition table
             currentState = transition[currentState][inp];
         }
 
-
         handler.postDelayed(() -> knight.setImageDrawable(idle_knight), delay += 1000);
         // Check if the final state is an accepting state
-        if (currentState == 3 || currentState == 4) {
+        if (currentState == 4) {
             handler.postDelayed(() -> showGamePopupSuccess(), delay += 1000);
         } else {
             handler.postDelayed(() -> showGamePopupFail(), delay += 1000);
         }
 
         //reset
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    knight.setImageDrawable(falling_knight);
-                    translate(knight, start_knight);
-                }
-            }, delay+=1000);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                knight.setImageDrawable(falling_knight);
+                translate(knight, start_knight);
+            }
+        }, delay+=1000);
 
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    knight.setImageDrawable(idle_knight);
-                }
-            }, delay+=1000);
-        }
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                knight.setImageDrawable(idle_knight);
+            }
+        }, delay+=1000);
+    }
 
 
 
@@ -156,7 +154,7 @@ public class AdventureLevel4 extends AppCompatActivity {
         prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent level2_popup = new Intent(getApplicationContext(), AdventureLevel3.class);
+                Intent level2_popup = new Intent(getApplicationContext(), AdventureLevel4.class);
                 startActivity(level2_popup);
             }
         });
@@ -196,7 +194,7 @@ public class AdventureLevel4 extends AppCompatActivity {
         prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent level1_popup = new Intent(getApplicationContext(), AdventureLevel3.class);
+                Intent level1_popup = new Intent(getApplicationContext(), AdventureLevel1.class);
                 startActivity(level1_popup);
             }
         });
@@ -213,13 +211,14 @@ public class AdventureLevel4 extends AppCompatActivity {
                 startActivity(home_popup);
             }
         });
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent next_popup = new Intent(getApplicationContext(), AdventureLevel5.class);
-                startActivity(next_popup);
-            }
-        });
+        next.setVisibility(View.GONE);
+//        next.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent next_popup = new Intent(getApplicationContext(), AdventureLevel2.class);
+//                startActivity(next_popup);
+//            }
+//        });
 
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();

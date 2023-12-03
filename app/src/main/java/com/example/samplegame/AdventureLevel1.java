@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,83 +36,79 @@ public class AdventureLevel1 extends AppCompatActivity {
         Drawable idle_knight = getResources().getDrawable(R.drawable.idle_knight);
         Drawable falling_knight = getResources().getDrawable(R.drawable.falling_knight);
         final Handler handler = new Handler();
-        int failed = 0;
+        int delay = 1000;
+        input.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
         String strInput = input.getText().toString().trim();
         // Convert input to lowercase for case-insensitive comparison
         String strInputLower = strInput.toLowerCase();
-
-            //check if empty
+        //check if empty
         if (strInput.isEmpty()) {
             Toast.makeText(getBaseContext(), "Input is empty", Toast.LENGTH_SHORT).show();
             return; // Exit the method if input is empty
         }
-            //move to start node
-            knight.setImageDrawable(climbing_knight);
-            translate(knight, node1);
+        //move to start node
+        knight.setImageDrawable(climbing_knight);
+        translate(knight, node1);
 
-            //check input
-            if(strInputLower.charAt(0) == 'a') {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        translate(knight, goal_node);
-                    }
-                }, 1000);
-                Toast.makeText(getBaseContext(), "Congratulations", Toast.LENGTH_SHORT).show();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        knight.setImageDrawable(idle_knight);
-                    }
-                }, 2000);
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        showGamePopupSuccess();
-                    }
-                }, 3000);
+        // DFA transition table
+        int[][] transition = {
+                {1, 2}, // From state 0 on input 'a', go to state 1; on input 'b', go to state 2
+                {1, 1}, // From state 1 on input 'a', stay on state 1; on input 'b', stay on state 1
+                {2, 2}  // From state 2 on input 'a', stay on state 2; on input 'b', stay on state 2
+        };
 
-            }else {
-                //wrong input
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        translate(knight, node2);
-                    }
-                }, 1000);
-                Toast.makeText(getBaseContext(), "Try Again", Toast.LENGTH_SHORT).show();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        knight.setImageDrawable(idle_knight);
-                    }
-                }, 2000);
-                failed = 1;
+        int currentState = 0; // Initial state is 0
+
+        // Process each character in the input string
+        for (int i = 0; i < strInputLower.length(); i++) {
+            char inputSymbol = strInputLower.charAt(i);
+
+            // Convert the character to an integer (assuming 'a' corresponds to 0 and 'b' corresponds to 1)
+            int inp;
+            if (inputSymbol == 'a') {
+                inp = 0;
+            } else if (inputSymbol == 'b') {
+                inp = 1;
+            } else {
+                return;
             }
 
-            //go back to start after failed level
-            if(failed == 1){
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        showGamePopupFail();
-                    }
-                }, 3000);
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        knight.setImageDrawable(falling_knight);
-                        translate(knight, start_knight);
-                    }
-                }, 5000);
-
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        knight.setImageDrawable(idle_knight);
-                    }
-                }, 6000);
+            // Transition logic
+            if (currentState == 0 && inp == 0) {
+                handler.postDelayed(() -> translate(knight, goal_node), delay += 1000);
             }
+
+            if (currentState == 0 && inp == 1) {
+                handler.postDelayed(() -> translate(knight, node2), delay += 1000);
+            }
+            // Update the current state using the transition table
+            currentState = transition[currentState][inp];
+        }
+
+        handler.postDelayed(() -> knight.setImageDrawable(idle_knight), delay += 1000);
+        // Check if the final state is an accepting state
+        if (currentState == 1) {
+            handler.postDelayed(() -> showGamePopupSuccess(), delay += 1000);
+        } else {
+            handler.postDelayed(() -> showGamePopupFail(), delay += 1000);
+        }
+
+        //reset
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                knight.setImageDrawable(falling_knight);
+                translate(knight, start_knight);
+            }
+        }, delay+=1000);
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                knight.setImageDrawable(idle_knight);
+            }
+        }, 6000);
 
     }
 
@@ -133,13 +130,14 @@ public class AdventureLevel1 extends AppCompatActivity {
         Button retry = myDialog.findViewById(R.id.retry_btn);
         Button prev = myDialog.findViewById(R.id.prev_btn);
 
-        prev.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent level1_popup = new Intent(getApplicationContext(), AdventureLevel1.class);
-                startActivity(level1_popup);
-            }
-        });
+        prev.setVisibility(View.GONE);
+//        prev.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent level1_popup = new Intent(getApplicationContext(), AdventureLevel1.class);
+//                startActivity(level1_popup);
+//            }
+//        });
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,13 +171,14 @@ public class AdventureLevel1 extends AppCompatActivity {
         Button home = myDialog.findViewById(R.id.home_btn);
         Button next = myDialog.findViewById(R.id.retry_btn);
 
-        prev.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent level1_popup = new Intent(getApplicationContext(), AdventureLevel1.class);
-                startActivity(level1_popup);
-            }
-        });
+        prev.setVisibility(View.GONE);
+//        prev.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent level1_popup = new Intent(getApplicationContext(), AdventureLevel1.class);
+//                startActivity(level1_popup);
+//            }
+//        });
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

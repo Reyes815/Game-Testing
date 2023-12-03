@@ -175,14 +175,15 @@
 
     <EditText
         android:id="@+id/inputEditText"
+        android:digits="abAB"
         android:layout_width="159dp"
         android:layout_height="43dp"
         android:layout_marginTop="8dp"
         android:backgroundTint="#FDFDFD"
         android:ems="10"
+        android:maxLength="1"
         android:fontFamily="casual"
         android:inputType="text"
-        android:maxLength="1"
         android:shadowColor="#000000"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
