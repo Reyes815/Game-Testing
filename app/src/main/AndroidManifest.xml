@@ -13,16 +13,44 @@
         android:theme="@style/Theme.SampleGame"
         tools:targetApi="31">
         <activity
-            android:name=".training5"
-            android:exported="false" />
+            android:name=".Formal_Representation_Training"
+            android:exported="true" >
+
+<!--        <intent-filter>-->
+<!--            <action android:name="android.intent.action.MAIN" />-->
+
+<!--            <category android:name="android.intent.category.LAUNCHER" />-->
+<!--        </intent-filter>-->
+
+        </activity>
         <activity
-            android:name=".training4"
-            android:exported="false" />
+            android:name=".Acceptance_Training"
+            android:exported="true" >
+
+<!--        <intent-filter>-->
+<!--            <action android:name="android.intent.action.MAIN" />-->
+
+
+<!--            <category android:name="android.intent.category.LAUNCHER" />-->
+<!--        </intent-filter>-->
+
+        </activity>
+
         <activity
             android:name=".training3"
-            android:exported="false" />
+            android:exported="true" >
+
+<!--        <intent-filter>-->
+<!--            <action android:name="android.intent.action.MAIN" />-->
+
+
+<!--            <category android:name="android.intent.category.LAUNCHER" />-->
+<!--        </intent-filter>-->
+
+        </activity>
+
         <activity
-            android:name=".training2"
+            android:name=".Transition_Training"
             android:exported="true"
             android:label="@string/title_activity_training2"
             android:theme="@style/Theme.SampleGame">

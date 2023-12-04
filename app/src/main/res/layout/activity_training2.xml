@@ -53,7 +53,7 @@
         app:srcCompat="@drawable/grass" />
 
     <ImageView
-        android:id="@+id/imageView6"
+        android:id="@+id/path_forA"
         android:layout_width="162dp"
         android:layout_height="189dp"
         android:layout_marginEnd="84dp"
@@ -63,7 +63,7 @@
         app:srcCompat="@drawable/path" />
 
     <ImageView
-        android:id="@+id/imageView10"
+        android:id="@+id/path_forB"
         android:layout_width="162dp"
         android:layout_height="189dp"
         android:layout_marginEnd="84dp"

@@ -4,19 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,12 +20,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.checkerframework.checker.units.qual.A;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class training2 extends AppCompatActivity {
+public class Transition_Training extends AppCompatActivity {
 
     private Handler handler;
     public FloatingActionButton button;
@@ -89,8 +80,8 @@ public class training2 extends AppCompatActivity {
         // Get references to your background and character ImageViews
         ImageView background1 = findViewById(R.id.imageView4);
         ImageView background2 = findViewById(R.id.imageView4_2);
-        ImageView path = findViewById(R.id.imageView6);
-        ImageView path2 = findViewById(R.id.imageView10);
+        ImageView path = findViewById(R.id.path_forA);
+        ImageView path2 = findViewById(R.id.path_forB);
         ImageView stone_gate = findViewById(R.id.stone_gate);
         ImageView stone_gate2 = findViewById(R.id.stone_gate2);
         ImageView character = findViewById(R.id.knight1);
