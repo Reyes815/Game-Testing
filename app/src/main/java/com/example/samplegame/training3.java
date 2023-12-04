@@ -28,7 +28,6 @@ public class training3 extends AppCompatActivity {
 
     private FirebaseFirestore firestore;
     private boolean enableClick = false;
-    private List<String> dataset = new ArrayList<>();
     private String answer = "";
     TextView wizard_dialogue;
     FloatingActionButton next_button;
@@ -39,7 +38,25 @@ public class training3 extends AppCompatActivity {
     private boolean monsterB = false;
     private boolean clicked = false;
     private boolean deadState = false;
-
+    private Handler handler = null;
+    private ImageView START;
+    private View goal_node2;
+    private View goal_node;
+    private View start_knight;
+    private TextView path2_A_txtView;
+    private TextView path_A_txtView;
+    private View flower_node_2;
+    private TextView path_B_txtView;
+    private TextView path2_B_txtView;
+    private AnimationDrawable attackedAnimation;
+    private AnimationDrawable attackAnimation2;
+    private AnimationDrawable attackAnimation;
+    private AnimationDrawable knightAttack;
+    private boolean AisDead = false;
+    private Runnable runnable;
+    private int charIndex = 0;
+    private String fullText = "";
+    private ImageView wizard;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,35 +65,31 @@ public class training3 extends AppCompatActivity {
 
         wizard_dialogue = findViewById(R.id.txtWizarddialogue);
         next_button = findViewById(R.id.next_button);
-        // Initialize Firebase
         this.firestore =FirebaseFirestore.getInstance();
-        final Handler handler = new Handler();
-        final ImageView START = findViewById(R.id.START);
-        final View goal_node2 = findViewById(R.id.flower_node_goal2); //
-        final View goal_node = findViewById(R.id.flower_node_goal);
-        final View start_knight = findViewById(R.id.knight1);
-        final TextView path2_A_txtView = findViewById(R.id.path2_A_txtView);//
-        final TextView path_A_txtView = findViewById(R.id.path_A_txtView);
-        final ImageView pathA = findViewById(R.id.pathA);
-        final View flower_node_2 = findViewById(R.id.flower_node_2);
-        final TextView path_B_txtView = findViewById(R.id.path_B_txtView);
-//        final View flower_node_ = findViewById(R.id.flower_node_);//
-        final TextView path2_B_txtView = findViewById(R.id.path2_B_txtView);//
-
-//        start_knight.setBackgroundResource(R.drawable.idle_knight);
-//        flower_node_.setBackgroundResource(R.drawable.dummy_attacked);
+        handler = new Handler();
+        START = findViewById(R.id.START);
+        goal_node2 = findViewById(R.id.flower_node_goal2);
+        goal_node = findViewById(R.id.flower_node_goal);
+        start_knight = findViewById(R.id.knight1);
+        path2_A_txtView = findViewById(R.id.path2_A_txtView);
+        path_A_txtView = findViewById(R.id.path_A_txtView);
+        flower_node_2 = findViewById(R.id.flower_node_2);
+        path_B_txtView = findViewById(R.id.path_B_txtView);
+        path2_B_txtView = findViewById(R.id.path2_B_txtView);
         goal_node2.setBackgroundResource(R.drawable.skeleton_attack);
         flower_node_2.setBackgroundResource(R.drawable.dummy_attacked);
-        AnimationDrawable attackedAnimation = (AnimationDrawable) flower_node_2.getBackground();
-        AnimationDrawable attackAnimation2= (AnimationDrawable) goal_node2.getBackground();
+        attackedAnimation = (AnimationDrawable) flower_node_2.getBackground();
+        attackAnimation2= (AnimationDrawable) goal_node2.getBackground();
 
         goal_node.setBackgroundResource(R.drawable.skeleton_attack);
-        AnimationDrawable attackAnimation= (AnimationDrawable) goal_node.getBackground();
+        attackAnimation= (AnimationDrawable) goal_node.getBackground();
 
+        wizard.setBackgroundResource(R.drawable.idle_wizard2);
+        AnimationDrawable idleW = (AnimationDrawable) wizard.getBackground();
+        idleW.start();
 
         start_knight.setBackgroundResource(R.drawable.knight_attack);
-        AnimationDrawable knightAttack = (AnimationDrawable) start_knight.getBackground();
-//        AnimationDrawable attackedAnimation2 = (AnimationDrawable) flower_node_.getBackground();
+        knightAttack = (AnimationDrawable) start_knight.getBackground();
 
         firestore.collection("Dialogue3")
                 .limit(1)
@@ -93,18 +106,25 @@ public class training3 extends AppCompatActivity {
                                 Log.d("training", "Answer Key: " + a);
                                 Log.d("training", "Dialogue: " + b);
 
-                                wizard_dialogue.setText(b);
+                                String dialogue = doc.getString("dialogue");
+                                displayTextWithAnimation(dialogue);
                                 lastDocumentKey = doc.getId();
+                                if(!a.isEmpty()){
+                                    enableClick = true;
+                                }else{
+                                    enableClick = false;
+                                }
                             }
                         } else {
                             Log.d("training", "Failed: " + task.getException());
                         }
                     }
                 });
-
         next_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                charIndex = 0;
                 if(monsterB){
                     goal_node2.setBackgroundResource(R.drawable.skeleton_death);
                     AnimationDrawable skeletonDeath2 = (AnimationDrawable) goal_node2.getBackground();
@@ -118,11 +138,8 @@ public class training3 extends AppCompatActivity {
                     @Override
                     public void run() {
                         translate(start_knight, START);
-//                        start_knight.setBackgroundResource(R.drawable.idle_knight);
                     }
                 }, 1000);
-                // Check if the lastDocumentKey is available
-                // Use the lastDocumentKey to query the next document
                 Log.d("training", "Answer: " + answer);
                 boolean flag = false;
                 if(answer.isEmpty() && a != ""){
@@ -131,41 +148,9 @@ public class training3 extends AppCompatActivity {
                     flag = true;
                 }
                 if(flag){
-                    Log.d("training","Wrong Answer");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            translate(start_knight, START);
-                        }
-                    }, 1000);
-                    answer = "";
-                    path_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
-                    path_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
-                    path2_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
-                    path2_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
-                    attackedAnimation.stop();
-                    attackAnimation.stop();
-//                    attackedAnimation2.stop();
-                    attackAnimation2.stop();
-                    knightAttack.stop();
-
-                    goal_node2.setBackgroundResource(R.drawable.skeleton_attack);
-                    flower_node_2.setBackgroundResource(R.drawable.dummy_attacked);
-                    goal_node.setBackgroundResource(R.drawable.skeleton_attack);
-
-                    deadState = false;
-                    monsterB = false;
-                    monsterA = false;
-                    clicked = false;
+                    rollBack();
                 }
                 else if(a == null || a.isEmpty() || answer.matches(a) || answer.matches(a2)) {
-//
-//                    answer = "";
-//                    path_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
-//                    path_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
-//                    path2_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
-//                    path2_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
-
                     firestore.collection("Dialogue3")
                             .orderBy(FieldPath.documentId())
                             .startAfter(lastDocumentKey)
@@ -183,9 +168,9 @@ public class training3 extends AppCompatActivity {
                                             Log.d("training", "Next - Answer Key: " + a);
                                             Log.d("training", "Next - Dialogue: " + b);
 
-                                            wizard_dialogue.setText(b);
+                                            String dialogue = document.getString("dialogue");
+                                            displayTextWithAnimation(dialogue);
 
-                                            // Update the lastDocumentKey for the next iteration
                                             lastDocumentKey = document.getId();
                                             if(!a.isEmpty()){
                                                 enableClick = true;
@@ -199,72 +184,26 @@ public class training3 extends AppCompatActivity {
                                 }
                             });
                 }else{
-                    Log.d("training","Wrong Answer");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            translate(start_knight, START);
-                        }
-                    }, 1000);
-                    answer = "";
-                    path_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
-                    path_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
-                    path2_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
-                    path2_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
-                    attackedAnimation.stop();
-                    attackAnimation.stop();
-//                    attackedAnimation2.stop();
-                    attackAnimation2.stop();
-                    knightAttack.stop();
-
-                    goal_node2.setBackgroundResource(R.drawable.skeleton_attack);
-                    flower_node_2.setBackgroundResource(R.drawable.dummy_attacked);
-                    goal_node.setBackgroundResource(R.drawable.skeleton_attack);
-                    deadState = false;
-                    monsterB = false;
-                    monsterA = false;
-                    clicked = false;
+                    rollBack();
                 }
             }
         });
 
-//        goal_node.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(enableClick) {
-////                    translate(start_knight, goal_node);
-//                    answer = answer + "M";
-//                    attackAnimation.start();
-//                }
-//            }
-//        });
-
-//        goal_node2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(enableClick) {
-////                    translate(start_knight, goal_node);
-//                    answer = answer + "M";
-//                    attackAnimation2.start();
-//                }
-//            }
-//        });
-
         path_A_txtView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                translate(start_knight, goal_node);
 
 
                 if(enableClick) {
 
+                    monsterA = true;
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             translate(start_knight, goal_node);
                         }
                     }, 1000);
-                    if(!monsterA){
+                    if(!AisDead){
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -273,7 +212,7 @@ public class training3 extends AppCompatActivity {
                                 AnimationDrawable attackAnimation= (AnimationDrawable) goal_node.getBackground();
                                 attackAnimation.start();
                                 knightAttack.start();
-                                monsterA = true;
+                                AisDead = true;
                             }
                         }, 1000);
                     }
@@ -289,7 +228,7 @@ public class training3 extends AppCompatActivity {
 
                 if(enableClick) {
 
-                    if(monsterA){
+                    if(AisDead){
                         goal_node.setBackgroundResource(R.drawable.skeleton_death);
                         AnimationDrawable skeletonDeath = (AnimationDrawable) goal_node.getBackground();
                         skeletonDeath.start();
@@ -298,7 +237,7 @@ public class training3 extends AppCompatActivity {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-
+                                monsterA = false;
                                 translate(start_knight, START);
                                 attackAnimation.stop();
                                 knightAttack.stop();
@@ -310,32 +249,10 @@ public class training3 extends AppCompatActivity {
                 }
             }
         });
-//        flower_node_2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                translate(start_knight, flower_node_2);
-//                if(enableClick){
-//                    answer = answer + "D";
-//                    attackedAnimation.start();
-//                }
-//            }
-//        });
-
-//        flower_node_.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                translate(start_knight, flower_node_2);
-//                if(enableClick){
-//                    answer = answer + "D";
-//                    attackedAnimation2.start();
-//                }
-//            }
-//        });
 
         path_B_txtView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                translate(start_knight, flower_node_2);
 
                 if(enableClick && !clicked) {
                     deadState = true;
@@ -351,7 +268,7 @@ public class training3 extends AppCompatActivity {
                         public void run() {
                             attackedAnimation.start();
                             knightAttack.start();
-                            monsterA = true;
+                            monsterA = false;
                         }
                     }, 1000);
 
@@ -400,5 +317,59 @@ public class training3 extends AppCompatActivity {
                 .y(targetCenterY)
                 .setDuration(1000)
                 .start();
+    }
+
+    private void rollBack(){
+            Log.d("training","Wrong Answer");
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    translate(start_knight, START);
+                }
+            }, 1000);
+            answer = "";
+            path_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
+            path_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
+            path2_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
+            path2_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
+            attackedAnimation.stop();
+            attackAnimation.stop();
+            attackAnimation2.stop();
+            knightAttack.stop();
+
+            goal_node2.setBackgroundResource(R.drawable.skeleton_attack);
+            flower_node_2.setBackgroundResource(R.drawable.dummy_attacked);
+            goal_node.setBackgroundResource(R.drawable.skeleton_attack);
+            deadState = false;
+            monsterB = false;
+            monsterA = false;
+            clicked = false;
+
+    }
+    private void displayTextWithAnimation(final String text) {
+        if (text != null) {
+            fullText = text;
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (charIndex < fullText.length()) {
+                        String partialText = fullText.substring(0, charIndex + 1);
+                        wizard_dialogue.setText(partialText);
+                        charIndex++;
+                        if (charIndex < fullText.length()) {
+                            handler.postDelayed(this, 50); // Adjust the delay time between characters
+                        }
+                    }
+                }
+            };
+            handler.postDelayed(runnable, 50); // Initial delay before starting animation
+        }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(runnable); // To prevent memory leaks, remove callbacks when the activity is destroyed
     }
 }

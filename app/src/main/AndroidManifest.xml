@@ -62,7 +62,7 @@
         </activity>
         <activity
             android:name=".training"
-            android:exported="true">
+            android:exported="false">
         </activity>
 
         <meta-data

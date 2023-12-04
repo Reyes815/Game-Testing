@@ -45,7 +45,7 @@
             android:layout_height="52dp"
             android:layout_gravity="bottom|start"
             android:layout_weight="1"
-            app:srcCompat="@drawable/idle_wizard" />
+            app:srcCompat="@drawable/idle_wizard2" />
 
     </LinearLayout>
 

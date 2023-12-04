@@ -67,22 +67,17 @@
         app:strokeColor="#3F51B5"
         app:strokeWidth="15dp" />
 
-    <TextView
-        android:id="@+id/txtWizarddialogue"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="60dp"
-        android:layout_marginRight="60dp"
+        android:layout_margin="20dp"
+        android:layout_marginBottom="588dp"
         android:background="@drawable/wizard_dialogue_textview"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
-        app:layout_constraintHorizontal_bias="0.468"
-        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="0.122" />
+        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+        app:layout_constraintEnd_toEndOf="@+id/imageView4"
+        app:layout_constraintTop_toTopOf="parent">
 
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/imageView6"
@@ -106,18 +101,6 @@
         app:layout_constraintTop_toTopOf="@+id/imageView4"
         app:layout_constraintVertical_bias="0.693" />
 
-    <ImageView
-        android:id="@+id/flower_node_goal"
-        android:layout_width="143dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="172dp"
-        android:layout_marginEnd="204dp"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="@+id/knight1"
-        app:layout_constraintEnd_toEndOf="@+id/imageView4"
-        app:layout_constraintTop_toTopOf="@+id/imageView4"
-        app:layout_constraintVertical_bias="0.518" />
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/next_button"
         android:layout_width="wrap_content"
@@ -129,7 +112,7 @@
         app:backgroundTint="#80FFFF00"
         app:elevation="8dp"
         app:layout_constraintEnd_toEndOf="@+id/imageView4"
-        app:layout_constraintTop_toTopOf="@+id/imageView4" />
+        app:layout_constraintBottom_toBottomOf="@+id/imageView4" />
 
     <ImageView
         android:id="@+id/pathA"
@@ -140,19 +123,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/imageView4"
         app:layout_constraintStart_toStartOf="@+id/imageView4"
         app:srcCompat="@drawable/path" />
-
-    <ImageView
-        android:id="@+id/knight1"
-        android:layout_width="87dp"
-        android:layout_height="97dp"
-        android:layout_marginBottom="4dp"
-        android:foregroundGravity="center|fill"
-        android:scaleType="fitCenter"
-        android:src="@drawable/idle_knight"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-        app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
-        app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toEndOf="@+id/linearLayout2" />
 
     <ImageView
         android:id="@+id/imageView7"
@@ -168,33 +138,13 @@
         android:id="@+id/imageView9"
         android:layout_width="174dp"
         android:layout_height="143dp"
-        android:layout_marginEnd="84dp"
+        android:layout_marginEnd="92dp"
         android:rotation="65"
         app:layout_constraintBottom_toBottomOf="@+id/imageView4"
         app:layout_constraintEnd_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="@+id/imageView4"
-        app:layout_constraintVertical_bias="0.589"
+        app:layout_constraintVertical_bias="0.646"
         app:srcCompat="@drawable/path" />
-
-    <ImageView
-        android:id="@+id/flower_node_goal2"
-        android:layout_width="143dp"
-        android:layout_height="150dp"
-        android:layout_marginEnd="196dp"
-        android:layout_marginBottom="352dp"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-        app:layout_constraintEnd_toEndOf="@+id/imageView4" />
-
-    <ImageView
-        android:id="@+id/flower_node_"
-        android:layout_width="63dp"
-        android:layout_height="67dp"
-        android:layout_marginTop="300dp"
-        android:layout_marginEnd="48dp"
-        android:scaleType="fitCenter"
-        app:layout_constraintEnd_toEndOf="@+id/imageView4"
-        app:layout_constraintTop_toTopOf="@+id/imageView4" />
 
     <TextView
         android:id="@+id/path_A_txtView"
@@ -218,7 +168,7 @@
         android:id="@+id/path2_A_txtView"
         android:layout_width="50dp"
         android:layout_height="47dp"
-        android:layout_marginStart="168dp"
+        android:layout_marginStart="152dp"
         android:background="@drawable/rounded_corner"
         android:fontFamily="@font/abril_fatface"
         android:gravity="center"
@@ -229,7 +179,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/imageView4"
         app:layout_constraintStart_toStartOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="@+id/imageView4"
-        app:layout_constraintVertical_bias="0.581" />
+        app:layout_constraintVertical_bias="0.638" />
 
     <TextView
         android:id="@+id/path_B_txtView"
@@ -265,6 +215,74 @@
         app:layout_constraintEnd_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="@+id/imageView4"
         app:layout_constraintVertical_bias="0.484" />
+
+    <ImageView
+        android:id="@+id/flower_node_goal"
+        android:layout_width="143dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="172dp"
+        android:layout_marginEnd="204dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/knight1"
+        app:layout_constraintEnd_toEndOf="@+id/imageView4"
+        app:layout_constraintTop_toTopOf="@+id/imageView4"
+        app:layout_constraintVertical_bias="0.518" />
+
+    <ImageView
+        android:id="@+id/flower_node_goal2"
+        android:layout_width="143dp"
+        android:layout_height="150dp"
+        android:layout_marginEnd="196dp"
+        android:layout_marginBottom="352dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+        app:layout_constraintEnd_toEndOf="@+id/imageView4" />
+
+    <ImageView
+        android:id="@+id/flower_node_"
+        android:layout_width="63dp"
+        android:layout_height="67dp"
+        android:layout_marginTop="336dp"
+        android:layout_marginEnd="56dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="@+id/imageView4"
+        app:layout_constraintTop_toTopOf="@+id/imageView4" />
+
+    <ImageView
+        android:id="@+id/knight1"
+        android:layout_width="87dp"
+        android:layout_height="97dp"
+        android:layout_marginBottom="4dp"
+        android:foregroundGravity="center|fill"
+        android:scaleType="fitCenter"
+        android:src="@drawable/idle_knight"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout2" />
+
+    <TextView
+        android:id="@+id/txtWizarddialogue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginEnd="35dp"
+        android:padding="16dp"
+        android:text=""
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/imageView4"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/wizard1"
+        android:layout_width="122dp"
+        android:layout_height="160dp"
+        android:layout_marginStart="264dp"
+        android:layout_marginTop="76dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView4" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
