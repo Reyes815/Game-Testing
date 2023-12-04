@@ -163,7 +163,7 @@ public class training extends AppCompatActivity {
                                                 }
                                             }
                                         }else{
-                                            Intent intent = new Intent(training.this, training2.class);
+                                            Intent intent = new Intent(training.this, training3.class);
                                             startActivity(intent);
                                         }
                                     } else {
