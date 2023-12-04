@@ -1,32 +1,73 @@
 package com.example.samplegame;
-
+import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AdventureLevel1 extends AppCompatActivity {
     Dialog myDialog;
+    Timer timer;
+    Date life_timer;
+    Date new_timer;
+    final Handler handler = new Handler();
+    Handler heartHandler = new Handler();
+    int delay = 1000;
+    boolean heart1alive;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.adventure_level1);
         myDialog = new Dialog(this);
+        Drawable dead_heart = getResources().getDrawable(R.drawable.dead_heart);
+        Drawable heart = getResources().getDrawable(R.drawable.heart);
+
+        // Retrieve image resource ID from SharedPreferences
+        SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        int savedImageResourceId = preferences.getInt("imageResourceId", R.drawable.heart);
+        // Set the ImageView with the retrieved resource ID
+        ImageView system_heart1 = findViewById(R.id.heart1);
+        system_heart1.setImageResource(savedImageResourceId);
+
+        SharedPreferences heart_checker_pref = getSharedPreferences("Heart Check", MODE_PRIVATE);
+        String heart_check_value = heart_checker_pref.getString("heartcheck", "");
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                //your method
+                if(heart_check_value.matches("TRUE")){
+                    Log.d("TRUE", "ITS ALIVE");
+
+                }
+                if(heart_check_value.matches("FALSE")){
+                    Log.d("FALSE", "ITS DEAD");
+                }
+            }
+        }, 0, 2000);//put here time 1000 milliseconds=1 second
     }
 
     public void Move(View v){
         EditText input = findViewById(R.id.inputEditText);
+        input.onEditorAction(EditorInfo.IME_ACTION_DONE);
         ImageView knight = findViewById(R.id.knight);
         final View start_knight = findViewById(R.id.start_image);
         final View node1 = findViewById(R.id.flower_node_1);
@@ -35,9 +76,6 @@ public class AdventureLevel1 extends AppCompatActivity {
         Drawable climbing_knight = getResources().getDrawable(R.drawable.climb_knight);
         Drawable idle_knight = getResources().getDrawable(R.drawable.idle_knight);
         Drawable falling_knight = getResources().getDrawable(R.drawable.falling_knight);
-        final Handler handler = new Handler();
-        int delay = 1000;
-        input.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
         String strInput = input.getText().toString().trim();
         // Convert input to lowercase for case-insensitive comparison
@@ -122,6 +160,11 @@ public class AdventureLevel1 extends AppCompatActivity {
     }
 
     private void showGamePopupFail() {
+        ImageView system_heart1 = findViewById(R.id.heart1);
+//        ImageView system_heart2 = findViewById(R.id.heart2);
+//        ImageView system_heart3 = findViewById(R.id.heart3);
+        Drawable dead_heart = getResources().getDrawable(R.drawable.dead_heart);
+        Drawable heart = getResources().getDrawable(R.drawable.heart);
         myDialog.setContentView(R.layout.game_popup_fail);
 
         // Find the close button after setting the content view
@@ -131,13 +174,6 @@ public class AdventureLevel1 extends AppCompatActivity {
         Button prev = myDialog.findViewById(R.id.prev_btn);
 
         prev.setVisibility(View.GONE);
-//        prev.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent level1_popup = new Intent(getApplicationContext(), AdventureLevel1.class);
-//                startActivity(level1_popup);
-//            }
-//        });
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,9 +198,24 @@ public class AdventureLevel1 extends AppCompatActivity {
 
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
+
+        SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("imageResourceId", R.drawable.dead_heart);
+        editor.apply();
+        system_heart1.setImageDrawable(dead_heart);
+
+        SharedPreferences heart_checker_pref = getSharedPreferences("Heart Check", MODE_PRIVATE);
+        SharedPreferences.Editor heart_editor = heart_checker_pref.edit();
+        heart_editor.putString("heartcheck", "FALSE");
+        heart_editor.apply();
     }
 
     private void showGamePopupSuccess() {
+        ImageView system_heart1 = findViewById(R.id.heart1);
+        Drawable dead_heart = getResources().getDrawable(R.drawable.dead_heart);
+        Drawable heart = getResources().getDrawable(R.drawable.heart);
+
         myDialog.setContentView(R.layout.game_popup);
         Button close = myDialog.findViewById(R.id.close_btn);
         Button prev = myDialog.findViewById(R.id.prev_btn);
@@ -172,13 +223,6 @@ public class AdventureLevel1 extends AppCompatActivity {
         Button next = myDialog.findViewById(R.id.retry_btn);
 
         prev.setVisibility(View.GONE);
-//        prev.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent level1_popup = new Intent(getApplicationContext(), AdventureLevel1.class);
-//                startActivity(level1_popup);
-//            }
-//        });
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,5 +246,15 @@ public class AdventureLevel1 extends AppCompatActivity {
 
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
+        SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("imageResourceId", R.drawable.heart);
+        editor.apply();
+        system_heart1.setImageDrawable(heart);
+
+        SharedPreferences heart_checker_pref = getSharedPreferences("Heart Check", MODE_PRIVATE);
+        SharedPreferences.Editor heart_editor = heart_checker_pref.edit();
+        heart_editor.putString("heartcheck", "TRUE");
+        heart_editor.apply();
     }
 }
