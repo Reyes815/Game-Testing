@@ -144,9 +144,10 @@ public class Transition_Training extends AppCompatActivity {
                             // Your delayed code here
                             dialog.show();
                         }
-                    }, 500);
+                    }, 3000);
                 }else {
-                    wizard_dialogue.setText("Congrats on Finishing the Training");
+
+                    wizard_dialogue.setText(dialoguesList.get(7));
                 }
 
             }
@@ -178,9 +179,9 @@ public class Transition_Training extends AppCompatActivity {
                         @Override
                         public void run() {
                             // Your delayed code here
-                            wizard_dialogue.setText("Nope try again");
+                            wizard_dialogue.setText(dialoguesList.get(5));
                         }
-                    }, 1500);
+                    }, 1800);
 
 
                     new Handler().postDelayed(new Runnable() {
@@ -208,9 +209,9 @@ public class Transition_Training extends AppCompatActivity {
                         @Override
                         public void run() {
                             // Your delayed code here
-                            wizard_dialogue.setText("Nope try again");
+                            wizard_dialogue.setText(dialoguesList.get(5));
                         }
-                    }, 1500);
+                    }, 1800);
 
 
                     new Handler().postDelayed(new Runnable() {
@@ -230,7 +231,14 @@ public class Transition_Training extends AppCompatActivity {
                         @Override
                         public void run() {
                             if(dialogue_counter < 4){
-                                wizard_dialogue.setText("Congrats!");
+                                wizard_dialogue.setText(dialoguesList.get(6));
+                            } else if (dialogue_counter == 4) {
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        stone_gate2.setVisibility(View.GONE);
+                                    }
+                                }, 1000);
                             }
                         }
                     }, 1000 );
@@ -259,7 +267,7 @@ public class Transition_Training extends AppCompatActivity {
                         @Override
                         public void run() {
                             if(dialogue_counter < 4){
-                                wizard_dialogue.setText("Congrats!");
+                                wizard_dialogue.setText(dialoguesList.get(6));
                             }
                         }
                     }, 1000 );
@@ -290,9 +298,9 @@ public class Transition_Training extends AppCompatActivity {
                         @Override
                         public void run() {
                             // Your delayed code here
-                            wizard_dialogue.setText("Nope try again");
+                            wizard_dialogue.setText(dialoguesList.get(6));
                         }
-                    }, 1500);
+                    }, 1800);
 
                     new Handler().postDelayed(new Runnable() {
                         @Override

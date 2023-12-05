@@ -3,48 +3,39 @@ package com.example.samplegame;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class training extends AppCompatActivity {
 
     private FirebaseFirestore firestore;
     private boolean enableClick = false;
-    private List<String> dataset = new ArrayList<>();
     private String answer = "";
     TextView wizard_dialogue;
     FloatingActionButton next_button;
     private String lastDocumentKey = null;
-    private String a = "",a2;
+    private String a = "",a2 = "",a3 = "",a4 = "",a5 = "";
     private String b;
-
+    private Handler handler;
+    private Runnable runnable;
+    private int charIndex = 0;
+    private String fullText = "";
+    private AnimationDrawable attackedAnimation2;
+    private ImageView wizard1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,11 +43,12 @@ public class training extends AppCompatActivity {
         Log.d("training", "Failed");
 
         wizard_dialogue = findViewById(R.id.txtWizarddialogue);
+        wizard1 = findViewById(R.id.wizard1);
         next_button = findViewById(R.id.next_button);
         // Initialize Firebase
         this.firestore =FirebaseFirestore.getInstance();
 
-        final Handler handler = new Handler();
+        handler = new Handler();
 
         final View goal_node2 = findViewById(R.id.flower_node_goal2); //
         final View goal_node = findViewById(R.id.flower_node_goal);
@@ -69,6 +61,10 @@ public class training extends AppCompatActivity {
         final View flower_node_ = findViewById(R.id.flower_node_);//
         final TextView path2_B_txtView = findViewById(R.id.path2_B_txtView);//
 
+        wizard1.setBackgroundResource(R.drawable.idle_wizard2);
+        AnimationDrawable idleW = (AnimationDrawable) wizard1.getBackground();
+        idleW.start();
+
         flower_node_.setBackgroundResource(R.drawable.dummy_attacked);
         goal_node2.setBackgroundResource(R.drawable.skeleton_attack);
 
@@ -79,42 +75,52 @@ public class training extends AppCompatActivity {
         AnimationDrawable attackedAnimation = (AnimationDrawable) flower_node_2.getBackground();
 
         AnimationDrawable attackAnimation2= (AnimationDrawable) goal_node2.getBackground();
-        AnimationDrawable attackedAnimation2 = (AnimationDrawable) flower_node_.getBackground();
+        attackedAnimation2 = (AnimationDrawable) flower_node_.getBackground();
 
         firestore.collection("Dialogue")
                 .limit(1)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot doc : task.getResult()) {
-                        // Document exists, you can access its data
-                        String a = doc.getString("answer_key");
-                        String b = doc.getString("dialogue");
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot doc : task.getResult()) {
+                                // Document exists, you can access its data
+                                String a = doc.getString("answer_key");
+                                String b = doc.getString("dialogue");
 
-                        Log.d("training", "Answer Key: " + a);
-                        Log.d("training", "Dialogue: " + b);
+                                Log.d("training", "Answer Key: " + a);
+                                Log.d("training", "Dialogue: " + b);
 
-                        wizard_dialogue.setText(b);
-                        lastDocumentKey = doc.getId();
+                                String dialogue = doc.getString("dialogue");
+                                displayTextWithAnimation(dialogue);
+                                lastDocumentKey = doc.getId();
+                            }
+                        } else {
+                            Log.d("training", "Failed: " + task.getException());
+                        }
                     }
-                } else {
-                    Log.d("training", "Failed: " + task.getException());
-                }
-            }
-        });
+                });
 
         next_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Check if the lastDocumentKey is available
-                    // Use the lastDocumentKey to query the next document
+                // Use the lastDocumentKey to query the next document
                 Log.d("training", "Answer: " + answer);
-                if(a == null || a.isEmpty() || answer.matches(a) || answer.matches(a2)) {
+                if ((a == null || a.isEmpty()) ||
+                        (answer != null && (
+                                (a != null && a.equals(answer)) ||
+                                        (a2 != null && a2.equals(answer)) ||
+                                        (a3 != null && a3.equals(answer)) ||
+                                        (a4 != null && a4.equals(answer)) ||
+                                        (a5 != null && a5.equals(answer))
+                        ))) {
                     if(answer.isEmpty() && a != ""){
                         return;
                     }
+                    Log.d("training","Wrong Answer");
+                    charIndex = 0;
                     answer = "";
                     path_A_txtView.setBackgroundResource(R.drawable.rounded_corner);
                     path_B_txtView.setBackgroundResource(R.drawable.rounded_corner);
@@ -133,23 +139,32 @@ public class training extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                     if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            a2 = document.getString("answer_key2");
-                                            a = document.getString("answer_key");
-                                            b = document.getString("dialogue");
+                                        if(!task.getResult().isEmpty()) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                a5 = document.getString("answer_key5");
+                                                a4 = document.getString("answer_key4");
+                                                a3 = document.getString("answer_key3");
+                                                a2 = document.getString("answer_key2");
+                                                a = document.getString("answer_key");
+                                                String dialogue = document.getString("dialogue");
+                                                displayTextWithAnimation(dialogue);
 
-                                            Log.d("training", "Next - Answer Key: " + a);
-                                            Log.d("training", "Next - Dialogue: " + b);
+                                                Log.d("training", "Next - Answer Key: " + a);
+                                                Log.d("training", "Next - Dialogue: " + b);
 
-                                            wizard_dialogue.setText(b);
+//                                                wizard_dialogue.setText(b);
 
-                                            // Update the lastDocumentKey for the next iteration
-                                            lastDocumentKey = document.getId();
-                                            if(!a.isEmpty()){
-                                                enableClick = true;
-                                            }else{
-                                                enableClick = false;
+                                                // Update the lastDocumentKey for the next iteration
+                                                lastDocumentKey = document.getId();
+                                                if (!a.isEmpty()) {
+                                                    enableClick = true;
+                                                } else {
+                                                    enableClick = false;
+                                                }
                                             }
+                                        }else{
+                                            Intent intent = new Intent(training.this, training3.class);
+                                            startActivity(intent);
                                         }
                                     } else {
                                         Log.d("training", "Failed: " + task.getException());
@@ -257,13 +272,30 @@ public class training extends AppCompatActivity {
             }
         });
     }
+    private void displayTextWithAnimation(final String text) {
+        if (text != null) {
+            fullText = text;
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (charIndex < fullText.length()) {
+                        String partialText = fullText.substring(0, charIndex + 1);
+                        wizard_dialogue.setText(partialText);
+                        charIndex++;
+                        if (charIndex < fullText.length()) {
+                            handler.postDelayed(this, 50); // Adjust the delay time between characters
+                        }
+                    }
+                }
+            };
+            handler.postDelayed(runnable, 50); // Initial delay before starting animation
+        }
+    }
 
-    private void translate(View viewToMove, View target) {
 
-        viewToMove.animate()
-                .x(target.getX())
-                .y(target.getY())
-                .setDuration(1000)
-                .start();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(runnable); // To prevent memory leaks, remove callbacks when the activity is destroyed
     }
 }
