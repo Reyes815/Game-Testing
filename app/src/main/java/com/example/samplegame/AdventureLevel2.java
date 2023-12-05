@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,6 +19,8 @@ import android.widget.Toast;
 
 public class AdventureLevel2 extends AppCompatActivity {
     Dialog myDialog;
+    final Handler handler = new Handler();
+    int delay = 1000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,17 +30,18 @@ public class AdventureLevel2 extends AppCompatActivity {
 
     public void Move(View v){
         EditText input = findViewById(R.id.inputEditText);
+        input.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
         ImageView knight = findViewById(R.id.knight);
+        knight.setBackgroundResource(R.drawable.climbing_knight);
+        AnimationDrawable climb = (AnimationDrawable) knight.getBackground();
+        Drawable idle_knight = getResources().getDrawable(R.drawable.idle_knight);
+        Drawable falling_knight = getResources().getDrawable(R.drawable.falling_knight);
+
         final View start_knight = findViewById(R.id.start_image);
         final View node1 = findViewById(R.id.flower_node_1);
         final View node2 = findViewById(R.id.flower_node_2);
         final View goal_node = findViewById(R.id.flower_node_goal);
-        Drawable climbing_knight = getResources().getDrawable(R.drawable.climb_knight);
-        Drawable idle_knight = getResources().getDrawable(R.drawable.idle_knight);
-        Drawable falling_knight = getResources().getDrawable(R.drawable.falling_knight);
-        final Handler handler = new Handler();
-        int delay = 1000;
-        input.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
         String strInput = input.getText().toString().trim();
         // Convert input to lowercase for case-insensitive comparison
@@ -47,8 +51,10 @@ public class AdventureLevel2 extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "Input is empty", Toast.LENGTH_SHORT).show();
             return; // Exit the method if input is empty
         }
+
         //move to start node
-        knight.setImageDrawable(climbing_knight);
+        knight.setImageDrawable(new ColorDrawable(Color.TRANSPARENT));
+        climb.start();
         translate(knight, node1);
 
         // DFA transition table
@@ -89,11 +95,12 @@ public class AdventureLevel2 extends AppCompatActivity {
             currentState = transition[currentState][inp];
         }
 
-        handler.postDelayed(() -> knight.setImageDrawable(idle_knight), delay += 1000);
         // Check if the final state is an accepting state
         if (currentState == 2) {
+            handler.postDelayed(() -> climb.stop(), delay += 100);
             handler.postDelayed(() -> showGamePopupSuccess(), delay += 1000);
         } else {
+            handler.postDelayed(() -> climb.stop(), delay += 100);
             handler.postDelayed(() -> showGamePopupFail(), delay += 1000);
         }
         //reset
@@ -108,9 +115,11 @@ public class AdventureLevel2 extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                climb.stop();
+                knight.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 knight.setImageDrawable(idle_knight);
             }
-        }, delay+=1000);
+        }, 6000);
     }
 
     private void translate(View viewToMove, View target) {

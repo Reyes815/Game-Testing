@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,6 +19,8 @@ import android.widget.Toast;
 
 public class AdventureLevel3 extends AppCompatActivity {
     Dialog myDialog;
+    final Handler handler = new Handler();
+    int delay = 1000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,18 +30,19 @@ public class AdventureLevel3 extends AppCompatActivity {
 
     public void Move(View v){
         EditText input = findViewById(R.id.inputEditText);
+        input.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
         ImageView knight = findViewById(R.id.knight);
+        knight.setBackgroundResource(R.drawable.climbing_knight);
+        AnimationDrawable climb = (AnimationDrawable) knight.getBackground();
+        Drawable idle_knight = getResources().getDrawable(R.drawable.idle_knight);
+        Drawable falling_knight = getResources().getDrawable(R.drawable.falling_knight);
+
         final View start_knight = findViewById(R.id.start_image);
         final View node1 = findViewById(R.id.flower_node_1);
         final View node2 = findViewById(R.id.flower_node_2);
         final View node3 = findViewById(R.id.flower_node_3);
         final View goal_node = findViewById(R.id.flower_node_goal);
-        Drawable climbing_knight = getResources().getDrawable(R.drawable.climb_knight);
-        Drawable idle_knight = getResources().getDrawable(R.drawable.idle_knight);
-        Drawable falling_knight = getResources().getDrawable(R.drawable.falling_knight);
-        final Handler handler = new Handler();
-        int delay = 1000;
-        input.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
         String strInput = input.getText().toString().trim();
         // Convert input to lowercase for case-insensitive comparison
@@ -49,8 +53,10 @@ public class AdventureLevel3 extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "Input is empty", Toast.LENGTH_SHORT).show();
             return; // Exit the method if input is empty
         }
+
         //move to start node
-        knight.setImageDrawable(climbing_knight);
+        knight.setImageDrawable(new ColorDrawable(Color.TRANSPARENT));
+        climb.start();
         translate(knight, node1);
 
         // DFA transition table
@@ -77,37 +83,35 @@ public class AdventureLevel3 extends AppCompatActivity {
                 return;
             }
             //start node
-            switch (currentState) {
-                case 0:
-                    if (inp == 0) {
-                        handler.postDelayed(() -> translate(knight, node2), delay);
-                    }
-                    break;
-
-                case 1:
-                    if (inp == 1) {
-                        handler.postDelayed(() -> translate(knight, node3), delay += 1000);
-                    }
-                    break;
-
-                case 2:
-                    if (inp == 0) {
-                        handler.postDelayed(() -> translate(knight, goal_node), delay += 1000);
-                    } else if (inp == 1) {
-                        handler.postDelayed(() -> translate(knight, node1), delay += 1000);
-                    }
-                    break;
+            if (currentState == 0 && inp == 0) {
+                handler.postDelayed(() -> translate(knight, node2), delay);
+            }
+            if (currentState == 0 && inp == 1) {
+                break;
+            }
+            if (currentState == 1 && inp == 0) {
+                break;
+            }
+            if (currentState == 1 && inp == 1) {
+                handler.postDelayed(() -> translate(knight, node3), delay += 1000);
+            }
+            if (currentState == 2 && inp == 0) {
+                handler.postDelayed(() -> translate(knight, goal_node), delay += 1000);
+            }
+            if (currentState == 2 && inp == 1) {
+                handler.postDelayed(() -> translate(knight, node1), delay += 1000);
             }
 
             // Update the current state using the transition table
             currentState = transition[currentState][inp];
         }
 
-        handler.postDelayed(() -> knight.setImageDrawable(idle_knight), delay += 1000);
         // Check if the final state is an accepting state
         if (currentState == 3) {
+            handler.postDelayed(() -> climb.stop(), delay += 100);
             handler.postDelayed(() -> showGamePopupSuccess(), delay += 1000);
         } else {
+            handler.postDelayed(() -> climb.stop(), delay += 100);
             handler.postDelayed(() -> showGamePopupFail(), delay += 1000);
         }
         //reset
@@ -117,11 +121,13 @@ public class AdventureLevel3 extends AppCompatActivity {
                 knight.setImageDrawable(falling_knight);
                 translate(knight, start_knight);
             }
-        }, 5000);
+        }, delay+=1000);
 
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                climb.stop();
+                knight.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 knight.setImageDrawable(idle_knight);
             }
         }, 6000);

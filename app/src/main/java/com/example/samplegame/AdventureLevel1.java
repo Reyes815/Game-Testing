@@ -1,10 +1,10 @@
 package com.example.samplegame;
-import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -16,20 +16,30 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-import java.util.Calendar;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class AdventureLevel1 extends AppCompatActivity {
     Dialog myDialog;
-    Timer timer;
-    Date life_timer;
-    Date new_timer;
     final Handler handler = new Handler();
-    Handler heartHandler = new Handler();
     int delay = 1000;
-    boolean heart1alive;
+    public enum HeartStatus {
+        ALIVE,
+        DEAD
+    }
+
+    Map<String, HeartStatus> booleanMap = new HashMap<>();
+    int newHour;
+    int newMinute;
+    int current_hour;
+    int current_minute;
+    private static final int heart = R.drawable.heart;
+    private static final int dead_heart = R.drawable.dead_heart;
 
 
     @Override
@@ -37,45 +47,92 @@ public class AdventureLevel1 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.adventure_level1);
         myDialog = new Dialog(this);
-        Drawable dead_heart = getResources().getDrawable(R.drawable.dead_heart);
-        Drawable heart = getResources().getDrawable(R.drawable.heart);
+
+        booleanMap.put("Heart1Alive", HeartStatus.ALIVE);
+        booleanMap.put("Heart2Alive", HeartStatus.ALIVE);
+        booleanMap.put("Heart3Alive", HeartStatus.ALIVE);
 
         // Retrieve image resource ID from SharedPreferences
         SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
         int savedImageResourceId = preferences.getInt("imageResourceId", R.drawable.heart);
         // Set the ImageView with the retrieved resource ID
         ImageView system_heart1 = findViewById(R.id.heart1);
+        ImageView system_heart2 = findViewById(R.id.heart2);
+        ImageView system_heart3 = findViewById(R.id.heart3);
         system_heart1.setImageResource(savedImageResourceId);
-
-        SharedPreferences heart_checker_pref = getSharedPreferences("Heart Check", MODE_PRIVATE);
-        String heart_check_value = heart_checker_pref.getString("heartcheck", "");
+        system_heart2.setImageResource(savedImageResourceId);
+        system_heart3.setImageResource(savedImageResourceId);
+        Button go = findViewById(R.id.movebtn);
 
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 //your method
-                if(heart_check_value.matches("TRUE")){
-                    Log.d("TRUE", "ITS ALIVE");
+                current_hour = getHour();
+                current_minute = getMinute();
+                go.setEnabled(heart_status("Heart3Alive"));
+            }
+        }, 0, 1000);//put here time 1000 milliseconds=1 second
 
-                }
-                if(heart_check_value.matches("FALSE")){
-                    Log.d("FALSE", "ITS DEAD");
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                //your method
+                if(!heart_status("Heart3Alive")){
+                    Log.d("Heart 3 Check", "HEART 3 JUST DIED");
+                    if(current_hour > newHour){
+                        Regain_life();
+                    }
+                    if(current_hour == newHour && current_minute >= newMinute){
+                        Regain_life();
+                    }
+                }else if(!heart_status("Heart2Alive")){
+                    Log.d("Heart 2 Check", "HEART 2 JUST DIED");
+                    if(current_hour > newHour){
+                        Regain_life();
+                    }
+                    if(current_hour == newHour && current_minute >= newMinute){
+                        Regain_life();
+                    }
+                }else if(!heart_status("Heart1Alive")){
+                    Log.d("Heart 1 Check", "HEART 1 JUST DIED");
+                    if(current_hour > newHour){
+                        Regain_life();
+                    }
+                    if(current_hour == newHour && current_minute >= newMinute){
+                        Regain_life();
+                    }
                 }
             }
-        }, 0, 2000);//put here time 1000 milliseconds=1 second
+        }, 0, 5000);//put here time 1000 milliseconds=1 second
+    }
+
+    public void Regain(View v){
+        ImageView system_heart1 = findViewById(R.id.heart1);
+        ImageView system_heart2 = findViewById(R.id.heart2);
+        ImageView system_heart3 = findViewById(R.id.heart3);
+
+        SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("imageResourceId", R.drawable.heart);
+        editor.apply();
+        system_heart1.setImageResource(heart);
     }
 
     public void Move(View v){
         EditText input = findViewById(R.id.inputEditText);
         input.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
         ImageView knight = findViewById(R.id.knight);
+        knight.setBackgroundResource(R.drawable.climbing_knight);
+        AnimationDrawable climb = (AnimationDrawable) knight.getBackground();
+        Drawable idle_knight = getResources().getDrawable(R.drawable.idle_knight);
+        Drawable falling_knight = getResources().getDrawable(R.drawable.falling_knight);
+
         final View start_knight = findViewById(R.id.start_image);
         final View node1 = findViewById(R.id.flower_node_1);
         final View node2 = findViewById(R.id.flower_node_2);
         final View goal_node = findViewById(R.id.flower_node_goal);
-        Drawable climbing_knight = getResources().getDrawable(R.drawable.climb_knight);
-        Drawable idle_knight = getResources().getDrawable(R.drawable.idle_knight);
-        Drawable falling_knight = getResources().getDrawable(R.drawable.falling_knight);
 
         String strInput = input.getText().toString().trim();
         // Convert input to lowercase for case-insensitive comparison
@@ -86,7 +143,8 @@ public class AdventureLevel1 extends AppCompatActivity {
             return; // Exit the method if input is empty
         }
         //move to start node
-        knight.setImageDrawable(climbing_knight);
+        knight.setImageDrawable(new ColorDrawable(Color.TRANSPARENT));
+        climb.start();
         translate(knight, node1);
 
         // DFA transition table
@@ -124,11 +182,12 @@ public class AdventureLevel1 extends AppCompatActivity {
             currentState = transition[currentState][inp];
         }
 
-        handler.postDelayed(() -> knight.setImageDrawable(idle_knight), delay += 1000);
         // Check if the final state is an accepting state
         if (currentState == 1) {
+            handler.postDelayed(() -> climb.stop(), delay += 100);
             handler.postDelayed(() -> showGamePopupSuccess(), delay += 1000);
         } else {
+            handler.postDelayed(() -> climb.stop(), delay += 100);
             handler.postDelayed(() -> showGamePopupFail(), delay += 1000);
         }
 
@@ -144,10 +203,12 @@ public class AdventureLevel1 extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                climb.stop();
+                knight.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 knight.setImageDrawable(idle_knight);
             }
         }, 6000);
-
+        delay = 1000;
     }
 
     private void translate(View viewToMove, View target) {
@@ -159,14 +220,61 @@ public class AdventureLevel1 extends AppCompatActivity {
                 .start();
     }
 
-    private void showGamePopupFail() {
+    public void failed_Attempt(){
         ImageView system_heart1 = findViewById(R.id.heart1);
-//        ImageView system_heart2 = findViewById(R.id.heart2);
-//        ImageView system_heart3 = findViewById(R.id.heart3);
-        Drawable dead_heart = getResources().getDrawable(R.drawable.dead_heart);
-        Drawable heart = getResources().getDrawable(R.drawable.heart);
-        myDialog.setContentView(R.layout.game_popup_fail);
+        ImageView system_heart2 = findViewById(R.id.heart2);
+        ImageView system_heart3 = findViewById(R.id.heart3);
 
+        newHour = getHour();
+        if(getMinute()+1 >= 60){
+            newMinute = (getMinute()+1) - 60;
+            newHour++;
+        } else {
+            newMinute = getMinute() + 1;
+        }
+
+        if(heart_status("Heart1Alive")){
+            saveImageResourceId(dead_heart);
+            system_heart1.setImageResource(dead_heart);
+            booleanMap.put("Heart1Alive", HeartStatus.DEAD);
+        } else if (heart_status("Heart2Alive")) {
+            saveImageResourceId(dead_heart);
+            system_heart2.setImageResource(dead_heart);
+            booleanMap.put("Heart2Alive", HeartStatus.DEAD);
+        } else if (heart_status("Heart3Alive")) {
+            saveImageResourceId(dead_heart);
+            system_heart3.setImageResource(dead_heart);
+            booleanMap.put("Heart3Alive", HeartStatus.DEAD);
+        }
+
+
+        Log.d("FAILED", "failed_Attempt");
+    }
+
+    public void Regain_life(){
+        ImageView system_heart1 = findViewById(R.id.heart1);
+        ImageView system_heart2 = findViewById(R.id.heart2);
+        ImageView system_heart3 = findViewById(R.id.heart3);
+
+        if(!heart_status("Heart3Alive")){
+            saveImageResourceId(heart);
+            system_heart3.setImageResource(heart);
+            booleanMap.put("Heart3Alive", HeartStatus.ALIVE);
+        } else if (!heart_status("Heart2Alive")) {
+            saveImageResourceId(heart);
+            system_heart2.setImageResource(heart);
+            booleanMap.put("Heart2Alive", HeartStatus.ALIVE);
+        } else if (!heart_status("Heart1Alive")) {
+            saveImageResourceId(heart);
+            system_heart1.setImageResource(heart);
+            booleanMap.put("Heart1Alive", HeartStatus.ALIVE);
+        }
+
+    }
+
+    private void showGamePopupFail() {
+        myDialog.setContentView(R.layout.game_popup_fail);
+        EditText input = findViewById(R.id.inputEditText);
         // Find the close button after setting the content view
         Button close = myDialog.findViewById(R.id.close_btn);
         Button home = myDialog.findViewById(R.id.home_btn);
@@ -192,30 +300,17 @@ public class AdventureLevel1 extends AppCompatActivity {
         retry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                input.setText("");
                 myDialog.dismiss();
             }
         });
 
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
-
-        SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("imageResourceId", R.drawable.dead_heart);
-        editor.apply();
-        system_heart1.setImageDrawable(dead_heart);
-
-        SharedPreferences heart_checker_pref = getSharedPreferences("Heart Check", MODE_PRIVATE);
-        SharedPreferences.Editor heart_editor = heart_checker_pref.edit();
-        heart_editor.putString("heartcheck", "FALSE");
-        heart_editor.apply();
+        failed_Attempt();
     }
 
     private void showGamePopupSuccess() {
-        ImageView system_heart1 = findViewById(R.id.heart1);
-        Drawable dead_heart = getResources().getDrawable(R.drawable.dead_heart);
-        Drawable heart = getResources().getDrawable(R.drawable.heart);
-
         myDialog.setContentView(R.layout.game_popup);
         Button close = myDialog.findViewById(R.id.close_btn);
         Button prev = myDialog.findViewById(R.id.prev_btn);
@@ -246,15 +341,28 @@ public class AdventureLevel1 extends AppCompatActivity {
 
         myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         myDialog.show();
+    }
+
+    public boolean heart_status(String key) {
+        return HeartStatus.ALIVE.equals(booleanMap.get(key));
+    }
+
+    public int getHour(){
+        SimpleDateFormat sdf = new SimpleDateFormat("HH");
+        String Time = sdf.format(new Date());
+        return Integer.parseInt(Time);
+    }
+
+    public int getMinute(){
+        SimpleDateFormat sdf = new SimpleDateFormat("mm");
+        String Time = sdf.format(new Date());
+        return Integer.parseInt(Time);
+    }
+
+    private void saveImageResourceId(int resourceId) {
         SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("imageResourceId", R.drawable.heart);
+        editor.putInt("imageResourceId", resourceId);
         editor.apply();
-        system_heart1.setImageDrawable(heart);
-
-        SharedPreferences heart_checker_pref = getSharedPreferences("Heart Check", MODE_PRIVATE);
-        SharedPreferences.Editor heart_editor = heart_checker_pref.edit();
-        heart_editor.putString("heartcheck", "TRUE");
-        heart_editor.apply();
     }
 }

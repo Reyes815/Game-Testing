@@ -33,7 +33,7 @@ public class AdventureLevel5 extends AppCompatActivity {
         final View node3 = findViewById(R.id.flower_node_3);
         final View node4 = findViewById(R.id.flower_node_4);
         final View goal_node = findViewById(R.id.flower_node_goal);
-        Drawable climbing_knight = getResources().getDrawable(R.drawable.climb_knight);
+        Drawable climbing_knight = getResources().getDrawable(R.drawable.knight_climb);
         Drawable idle_knight = getResources().getDrawable(R.drawable.idle_knight);
         Drawable falling_knight = getResources().getDrawable(R.drawable.falling_knight);
         final Handler handler = new Handler();

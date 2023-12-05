@@ -7,6 +7,22 @@
     android:background="#2D4059"
     tools:context=".AdventureLevel1">
 
+    <Button
+        android:id="@+id/movebtn2"
+        android:layout_width="78dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="21dp"
+        android:layout_marginEnd="76dp"
+        android:background="@drawable/button_background_color"
+        android:onClick="Move"
+        android:text="Go!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/inputEditText"
+        app:layout_constraintTop_toBottomOf="@+id/Question_txtView"
+        app:layout_constraintVertical_bias="0.36" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="200dp"
@@ -191,8 +207,8 @@
 
     <ImageView
         android:id="@+id/knight"
-        android:layout_width="152dp"
-        android:layout_height="133dp"
+        android:layout_width="117dp"
+        android:layout_height="115dp"
         android:layout_marginBottom="28dp"
         android:foregroundGravity="center|fill"
         android:scaleType="fitCenter"
