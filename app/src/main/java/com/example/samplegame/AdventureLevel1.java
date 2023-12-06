@@ -1,8 +1,8 @@
 package com.example.samplegame;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -17,6 +17,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,19 +34,25 @@ public class AdventureLevel1 extends AppCompatActivity {
     Dialog myDialog;
     final Handler handler = new Handler();
     int delay = 1000;
-    public enum HeartStatus {
-        ALIVE,
-        DEAD
-    }
-
-    Map<String, HeartStatus> booleanMap = new HashMap<>();
-    int newHour;
-    int newMinute;
-    int current_hour;
-    int current_minute;
+    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    int newHour = 0;
+    int newMinute = 0;
+    int current_hour = 0;
+    int current_minute = 0;
     private static final int heart = R.drawable.heart;
     private static final int dead_heart = R.drawable.dead_heart;
-
+    // Get the singleton instance
+    Map<String, Object> Dead_Update = new HashMap<>();
+    Map<String, Object> Alive_Update = new HashMap<>();
+    Map<String, Object> Hour = new HashMap<>();
+    Map<String, Object> Minute = new HashMap<>();
+    DocumentReference heart_1_ref = firestore.collection("Life_System").document("Heart_1");
+    DocumentReference heart_2_ref = firestore.collection("Life_System").document("Heart_2");
+    DocumentReference heart_3_ref = firestore.collection("Life_System").document("Heart_3");
+    DocumentReference Timer = firestore.collection("Life_System").document("Timer");
+    String heart_1_status;
+    String heart_2_status;
+    String heart_3_status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,75 +60,165 @@ public class AdventureLevel1 extends AppCompatActivity {
         setContentView(R.layout.adventure_level1);
         myDialog = new Dialog(this);
 
-        booleanMap.put("Heart1Alive", HeartStatus.ALIVE);
-        booleanMap.put("Heart2Alive", HeartStatus.ALIVE);
-        booleanMap.put("Heart3Alive", HeartStatus.ALIVE);
+        Dead_Update.put("Status", "DEAD");
+        Alive_Update.put("Status", "ALIVE");
 
-        // Retrieve image resource ID from SharedPreferences
-        SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
-        int savedImageResourceId = preferences.getInt("imageResourceId", R.drawable.heart);
         // Set the ImageView with the retrieved resource ID
         ImageView system_heart1 = findViewById(R.id.heart1);
         ImageView system_heart2 = findViewById(R.id.heart2);
         ImageView system_heart3 = findViewById(R.id.heart3);
-        system_heart1.setImageResource(savedImageResourceId);
-        system_heart2.setImageResource(savedImageResourceId);
-        system_heart3.setImageResource(savedImageResourceId);
         Button go = findViewById(R.id.movebtn);
 
-        new Timer().scheduleAtFixedRate(new TimerTask() {
+        heart_1_ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void run() {
-                //your method
-                current_hour = getHour();
-                current_minute = getMinute();
-                go.setEnabled(heart_status("Heart3Alive"));
-            }
-        }, 0, 1000);//put here time 1000 milliseconds=1 second
-
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                //your method
-                if(!heart_status("Heart3Alive")){
-                    Log.d("Heart 3 Check", "HEART 3 JUST DIED");
-                    if(current_hour > newHour){
-                        Regain_life();
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Assuming 'status' is the field in your document
+                        heart_1_status = document.getString("Status");
+                        if ("ALIVE".equals(heart_1_status)) {
+                            system_heart1.setImageResource(heart);
+                        } else {
+                            system_heart1.setImageResource(dead_heart);
+                        }
+                    } else {
+                        Log.d("Document does not exist", "No such document");
                     }
-                    if(current_hour == newHour && current_minute >= newMinute){
-                        Regain_life();
-                    }
-                }else if(!heart_status("Heart2Alive")){
-                    Log.d("Heart 2 Check", "HEART 2 JUST DIED");
-                    if(current_hour > newHour){
-                        Regain_life();
-                    }
-                    if(current_hour == newHour && current_minute >= newMinute){
-                        Regain_life();
-                    }
-                }else if(!heart_status("Heart1Alive")){
-                    Log.d("Heart 1 Check", "HEART 1 JUST DIED");
-                    if(current_hour > newHour){
-                        Regain_life();
-                    }
-                    if(current_hour == newHour && current_minute >= newMinute){
-                        Regain_life();
-                    }
+                } else {
+                    Log.d("Failed to get doc", "get failed with ", task.getException());
                 }
             }
-        }, 0, 5000);//put here time 1000 milliseconds=1 second
-    }
+        });
 
-    public void Regain(View v){
-        ImageView system_heart1 = findViewById(R.id.heart1);
-        ImageView system_heart2 = findViewById(R.id.heart2);
-        ImageView system_heart3 = findViewById(R.id.heart3);
+        heart_2_ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Assuming 'status' is the field in your document
+                        heart_2_status = document.getString("Status");
+                        if ("ALIVE".equals(heart_2_status)) {
+                            system_heart2.setImageResource(heart);
+                        } else {
+                            system_heart2.setImageResource(dead_heart);
+                        }
+                    } else {
+                        Log.d("Document does not exist", "No such document");
+                    }
+                } else {
+                    Log.d("Failed to get doc", "get failed with ", task.getException());
+                }
+            }
+        });
 
-        SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("imageResourceId", R.drawable.heart);
-        editor.apply();
-        system_heart1.setImageResource(heart);
+        heart_3_ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Assuming 'status' is the field in your document
+                        heart_3_status = document.getString("Status");
+                        if ("ALIVE".equals(heart_3_status)) {
+                            system_heart3.setImageResource(heart);
+                        } else {
+                            system_heart3.setImageResource(dead_heart);
+                        }
+                    } else {
+                        Log.d("Document does not exist", "No such document");
+                    }
+                } else {
+                    Log.d("Failed to get doc", "get failed with ", task.getException());
+                }
+            }
+        });
+
+        // Create a handler for periodic checks
+        final Handler statusCheckHandler = new Handler();
+        // Create a Timer for periodic time checks
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                current_hour = getHour();
+                current_minute = getMinute();
+                checkAndRegainLife();
+            }
+        }, 0, 1000);  // 1000 milliseconds = 1 second
+                // Define a runnable to check the status periodically
+        final Runnable statusCheckRunnable = new Runnable() {
+            @Override
+            public void run() {
+
+                // Check and update the status for heart_1
+                heart_1_ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                String newStatus = document.getString("Status");
+                                if (!newStatus.equals(heart_1_status)) {
+                                    heart_1_status = newStatus;
+                                    updateHeartStatus(heart_1_status, system_heart1);
+                                }
+                            } else {
+                                Log.d("Document does not exist", "No such document");
+                            }
+                        } else {
+                            Log.d("Failed to get doc", "get failed with ", task.getException());
+                        }
+                    }
+                });
+
+                // Check and update the status for heart_2
+                heart_2_ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                String newStatus = document.getString("Status");
+                                if (!newStatus.equals(heart_2_status)) {
+                                    heart_2_status = newStatus;
+                                    updateHeartStatus(heart_2_status, system_heart2);
+                                }
+                            } else {
+                                Log.d("Document does not exist", "No such document");
+                            }
+                        } else {
+                            Log.d("Failed to get doc", "get failed with ", task.getException());
+                        }
+                    }
+                });
+
+                // Check and update the status for heart_3
+                heart_3_ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                String newStatus = document.getString("Status");
+                                if (!newStatus.equals(heart_3_status)) {
+                                    heart_3_status = newStatus;
+                                    updateHeartStatus(heart_3_status, system_heart3);
+                                }
+                            } else {
+                                Log.d("Document does not exist", "No such document");
+                            }
+                        } else {
+                            Log.d("Failed to get doc", "get failed with ", task.getException());
+                        }
+                    }
+                });
+                // Schedule the next status check after a delay (e.g., every 5 seconds)
+                statusCheckHandler.postDelayed(this, 5000);  // 5000 milliseconds = 5 seconds
+            }
+        };
+        // Start the initial status check
+        statusCheckHandler.post(statusCheckRunnable);
     }
 
     public void Move(View v){
@@ -142,6 +244,24 @@ public class AdventureLevel1 extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "Input is empty", Toast.LENGTH_SHORT).show();
             return; // Exit the method if input is empty
         }
+
+        if(heart_3_status.equals("DEAD")){
+            myDialog.setContentView(R.layout.no_lives_popup);
+            Button home = myDialog.findViewById(R.id.home_btn);
+            Button ads = myDialog.findViewById(R.id.next_btn);
+            home.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent home_popup = new Intent(getApplicationContext(), Level_Menu.class);
+                    startActivity(home_popup);
+                }
+            });
+            ads.setEnabled(false);
+            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            myDialog.show();
+            return;
+        }
+
         //move to start node
         knight.setImageDrawable(new ColorDrawable(Color.TRANSPARENT));
         climb.start();
@@ -183,12 +303,11 @@ public class AdventureLevel1 extends AppCompatActivity {
         }
 
         // Check if the final state is an accepting state
-        if (currentState == 1) {
-            handler.postDelayed(() -> climb.stop(), delay += 100);
-            handler.postDelayed(() -> showGamePopupSuccess(), delay += 1000);
+        handler.postDelayed(climb::stop, delay += 100);
+        if(currentState == 1) {
+            handler.postDelayed(this::showGamePopupSuccess, delay += 1000);
         } else {
-            handler.postDelayed(() -> climb.stop(), delay += 100);
-            handler.postDelayed(() -> showGamePopupFail(), delay += 1000);
+            handler.postDelayed(this::showGamePopupFail, delay += 1000);
         }
 
         //reset
@@ -207,7 +326,7 @@ public class AdventureLevel1 extends AppCompatActivity {
                 knight.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 knight.setImageDrawable(idle_knight);
             }
-        }, 6000);
+        }, delay+=1000);
         delay = 1000;
     }
 
@@ -221,55 +340,35 @@ public class AdventureLevel1 extends AppCompatActivity {
     }
 
     public void failed_Attempt(){
-        ImageView system_heart1 = findViewById(R.id.heart1);
-        ImageView system_heart2 = findViewById(R.id.heart2);
-        ImageView system_heart3 = findViewById(R.id.heart3);
-
         newHour = getHour();
-        if(getMinute()+1 >= 60){
+        if(getMinute()+5 >= 60){
             newMinute = (getMinute()+1) - 60;
             newHour++;
         } else {
-            newMinute = getMinute() + 1;
+            newMinute = getMinute() + 5;
         }
+        Hour.put("Hour", newHour);
+        Minute.put("Minute", newMinute);
+        Timer.update(Hour);
+        Timer.update(Minute);
 
-        if(heart_status("Heart1Alive")){
-            saveImageResourceId(dead_heart);
-            system_heart1.setImageResource(dead_heart);
-            booleanMap.put("Heart1Alive", HeartStatus.DEAD);
-        } else if (heart_status("Heart2Alive")) {
-            saveImageResourceId(dead_heart);
-            system_heart2.setImageResource(dead_heart);
-            booleanMap.put("Heart2Alive", HeartStatus.DEAD);
-        } else if (heart_status("Heart3Alive")) {
-            saveImageResourceId(dead_heart);
-            system_heart3.setImageResource(dead_heart);
-            booleanMap.put("Heart3Alive", HeartStatus.DEAD);
+        if(heart_1_status.equals("ALIVE")){
+            heart_1_ref.update(Dead_Update);
+        } else if (heart_2_status.equals("ALIVE")) {
+            heart_2_ref.update(Dead_Update);
+        } else if (heart_3_status.equals("ALIVE")) {
+            heart_3_ref.update(Dead_Update);
         }
-
-
-        Log.d("FAILED", "failed_Attempt");
     }
 
     public void Regain_life(){
-        ImageView system_heart1 = findViewById(R.id.heart1);
-        ImageView system_heart2 = findViewById(R.id.heart2);
-        ImageView system_heart3 = findViewById(R.id.heart3);
-
-        if(!heart_status("Heart3Alive")){
-            saveImageResourceId(heart);
-            system_heart3.setImageResource(heart);
-            booleanMap.put("Heart3Alive", HeartStatus.ALIVE);
-        } else if (!heart_status("Heart2Alive")) {
-            saveImageResourceId(heart);
-            system_heart2.setImageResource(heart);
-            booleanMap.put("Heart2Alive", HeartStatus.ALIVE);
-        } else if (!heart_status("Heart1Alive")) {
-            saveImageResourceId(heart);
-            system_heart1.setImageResource(heart);
-            booleanMap.put("Heart1Alive", HeartStatus.ALIVE);
+        if(heart_3_status.equals("DEAD")){
+            heart_3_ref.update(Alive_Update);
+        } else if (heart_2_status.equals("DEAD")) {
+            heart_2_ref.update(Alive_Update);
+        } else if (heart_1_status.equals("DEAD")) {
+            heart_1_ref.update(Alive_Update);
         }
-
     }
 
     private void showGamePopupFail() {
@@ -278,7 +377,7 @@ public class AdventureLevel1 extends AppCompatActivity {
         // Find the close button after setting the content view
         Button close = myDialog.findViewById(R.id.close_btn);
         Button home = myDialog.findViewById(R.id.home_btn);
-        Button retry = myDialog.findViewById(R.id.retry_btn);
+        Button retry = myDialog.findViewById(R.id.next_btn);
         Button prev = myDialog.findViewById(R.id.prev_btn);
 
         prev.setVisibility(View.GONE);
@@ -315,7 +414,7 @@ public class AdventureLevel1 extends AppCompatActivity {
         Button close = myDialog.findViewById(R.id.close_btn);
         Button prev = myDialog.findViewById(R.id.prev_btn);
         Button home = myDialog.findViewById(R.id.home_btn);
-        Button next = myDialog.findViewById(R.id.retry_btn);
+        Button next = myDialog.findViewById(R.id.next_btn);
 
         prev.setVisibility(View.GONE);
         close.setOnClickListener(new View.OnClickListener() {
@@ -343,10 +442,6 @@ public class AdventureLevel1 extends AppCompatActivity {
         myDialog.show();
     }
 
-    public boolean heart_status(String key) {
-        return HeartStatus.ALIVE.equals(booleanMap.get(key));
-    }
-
     public int getHour(){
         SimpleDateFormat sdf = new SimpleDateFormat("HH");
         String Time = sdf.format(new Date());
@@ -359,10 +454,40 @@ public class AdventureLevel1 extends AppCompatActivity {
         return Integer.parseInt(Time);
     }
 
-    private void saveImageResourceId(int resourceId) {
-        SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("imageResourceId", resourceId);
-        editor.apply();
+    private void checkAndRegainLife() {
+        Timer.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Assuming 'status' is the field in your document
+                        Double hour = document.getDouble("Hour");
+                        Double minute = document.getDouble("Minute");
+
+                        if (heart_1_status.equals("DEAD") && hour != null && minute != null) {
+                            if (current_hour > hour || (current_hour == hour && current_minute > minute)) {
+                                Regain_life();
+                            }
+                        }
+                        // Add similar checks for heart_2 and heart_3 if needed
+                    } else {
+                        Log.d("Document does not exist", "No such document");
+                    }
+                } else {
+                    Log.d("Failed to get doc", "get failed with ", task.getException());
+                }
+            }
+        });
     }
+
+    // Add this method to update the UI based on the new heart status
+    private void updateHeartStatus(String newStatus, ImageView imageView) {
+        if ("ALIVE".equals(newStatus)) {
+            imageView.setImageResource(heart);
+        } else {
+            imageView.setImageResource(dead_heart);
+        }
+    }
+
 }

@@ -21,7 +21,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/inputEditText"
         app:layout_constraintTop_toBottomOf="@+id/Question_txtView"
-        app:layout_constraintVertical_bias="0.36" />
+        app:layout_constraintVertical_bias="0.36"
+        tools:ignore="HardcodedText" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

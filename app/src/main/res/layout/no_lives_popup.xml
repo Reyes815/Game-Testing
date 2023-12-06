@@ -15,39 +15,57 @@
         android:layout_gravity="center"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/close_btn"
-            android:layout_width="33dp"
-            android:layout_height="21dp"
-            android:layout_gravity="end"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_background_color"
-            android:text="X"
-            android:textColor="#000000" />
-
         <TextView
             android:id="@+id/textView3"
-            android:layout_width="match_parent"
+            android:layout_width="212dp"
             android:layout_height="55dp"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:layout_weight="1"
             android:background="@drawable/rounded_corner"
             android:fontFamily="@font/abril_fatface"
             android:gravity="center"
             android:padding="3dp"
-            android:text="You have passed the level warrior! I commend you"
+            android:text="I pity you warrior, You have wasted all your lives"
             android:textColor="#2D4059" />
 
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="127dp"
-            android:layout_height="63dp"
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"
-            android:foregroundGravity="center"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/idle_wizard2" />
+            android:orientation="horizontal"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.985"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/heart1"
+                android:layout_width="57dp"
+                android:layout_height="41dp"
+                android:layout_gravity="bottom|start"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/dead_heart" />
+
+            <ImageView
+                android:id="@+id/heart2"
+                android:layout_width="57dp"
+                android:layout_height="41dp"
+                android:layout_gravity="bottom|start"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/dead_heart" />
+
+            <ImageView
+                android:id="@+id/heart3"
+                android:layout_width="57dp"
+                android:layout_height="41dp"
+                android:layout_gravity="bottom|start"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/dead_heart" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -56,15 +74,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/prev_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_background_color"
-            android:text="Prev" />
 
         <Button
             android:id="@+id/home_btn"
@@ -82,7 +91,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@drawable/button_background_color"
-            android:text="Next" />
+            android:text="Watch AD" />
 
     </LinearLayout>
 
